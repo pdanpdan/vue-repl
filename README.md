@@ -1,4 +1,4 @@
-# @vue/repl
+# @pdanpdan/vue-repl
 
 Vue SFC REPL as a Vue 3 component.
 
@@ -12,9 +12,9 @@ Basic editing experience with no intellisense. Lighter weight, fewer network req
 
 ```vue
 <script setup>
-import { Repl } from '@vue/repl'
-import CodeMirror from '@vue/repl/codemirror-editor'
-// import '@vue/repl/style.css'
+import { Repl } from '@pdanpdan/vue-repl'
+import CodeMirror from '@pdanpdan/vue-repl/codemirror-editor'
+// import '@pdanpdan/vue-repl/style.css'
 // ^ no longer needed after 3.0
 </script>
 
@@ -29,9 +29,9 @@ With Volar support, autocomplete, type inference, and semantic highlighting. Hea
 
 ```vue
 <script setup>
-import { Repl } from '@vue/repl'
-import Monaco from '@vue/repl/monaco-editor'
-// import '@vue/repl/style.css'
+import { Repl } from '@pdanpdan/vue-repl'
+import Monaco from '@pdanpdan/vue-repl/monaco-editor'
+// import '@pdanpdan/vue-repl/style.css'
 // ^ no longer needed after 3.0
 </script>
 
@@ -47,8 +47,8 @@ Customize the behavior of the REPL by manually initializing the store.
 ```vue
 <script setup>
 import { watchEffect } from 'vue'
-import { Repl, ReplStore } from '@vue/repl'
-import Monaco from '@vue/repl/monaco-editor'
+import { Repl, ReplStore } from '@pdanpdan/vue-repl'
+import Monaco from '@pdanpdan/vue-repl/monaco-editor'
 
 // retrieve some configuration options from the URL
 const query = new URLSearchParams(location.search)
