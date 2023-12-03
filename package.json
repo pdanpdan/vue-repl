@@ -66,6 +66,7 @@
   "homepage": "https://github.com/vuejs/repl#readme",
   "devDependencies": {
     "@babel/types": "^7.23.5",
+    "@emmetio/codemirror-plugin": "^1.2.4",
     "@rollup/plugin-replace": "^5.0.5",
     "@types/codemirror": "^5.60.15",
     "@types/node": "^20.10.2",
@@ -77,6 +78,7 @@
     "bumpp": "^9.2.0",
     "codemirror": "^5.65.16",
     "conventional-changelog-cli": "^4.1.0",
+    "emmet-monaco-es": "^5.3.0",
     "fflate": "^0.8.1",
     "hash-sum": "^2.0.0",
     "lint-staged": "^15.1.0",

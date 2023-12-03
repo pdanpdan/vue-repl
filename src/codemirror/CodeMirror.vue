@@ -39,6 +39,18 @@ onMounted(() => {
         foldGutter: true,
         gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
         keyMap: 'sublime',
+        extraKeys: {
+          Tab: 'emmetExpandAbbreviation',
+          Esc: 'emmetResetAbbreviation',
+          Enter: 'emmetInsertLineBreak',
+        },
+        emmet: {
+          mark: true,
+          markTagPairs: true,
+          previewOpenTag: true,
+          preview: true,
+          autoRenameTags: true,
+        },
       }
 
   const editor = CodeMirror(containerRef.value!, {

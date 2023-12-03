@@ -545,3 +545,44 @@ span.CodeMirror-selectedtext {
 .CodeMirror-dialog {
   background-color: var(--bg);
 }
+
+/* Emmet */
+.emmet-abbreviation {
+  border-bottom: 1px solid rgba(0, 180, 0, 0.3);
+  border-radius: 2px;
+}
+
+.emmet-abbreviation-preview {
+  background: #111;
+  border-radius: 4px;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.emmet-abbreviation-preview .CodeMirror-cursors {
+  display: none;
+}
+
+.emmet-abbreviation-preview .CodeMirror-vscrollbar {
+  overflow: hidden;
+}
+
+.emmet-abbreviation-preview .CodeMirror-sizer {
+  border-right: 0;
+}
+
+.emmet-open-tag,
+.emmet-close-tag {
+  text-decoration: underline;
+}
+
+.emmet-tag-preview {
+  background: #117700;
+  color: #ffffff;
+  border-radius: 2px;
+  padding: 2px 4px;
+  font-size: 0.8em;
+  opacity: 0.6;
+  margin-top: -16px;
+  margin-left: 2px;
+}

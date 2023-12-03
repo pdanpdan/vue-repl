@@ -1,7 +1,9 @@
 import { jsDelivrUriBase } from '@volar/cdn'
 import * as volar from '@volar/monaco'
+import * as monaco from 'monaco-editor-core'
 import { editor, languages, Uri } from 'monaco-editor-core'
 import editorWorker from 'monaco-editor-core/esm/vs/editor/editor.worker?worker'
+import { emmetHTML } from 'emmet-monaco-es'
 import * as onigasm from 'onigasm'
 import onigasmWasm from 'onigasm/lib/onigasm.wasm?url'
 import { watchEffect } from 'vue'
@@ -15,6 +17,7 @@ export function initMonaco(store: Store) {
   if (initted) return
   loadMonacoEnv(store)
   loadWasm()
+  emmetHTML(monaco as any, ['vue', 'html'])
 
   watchEffect(() => {
     // create a model for each file in the store

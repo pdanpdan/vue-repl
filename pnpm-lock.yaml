@@ -8,6 +8,9 @@ devDependencies:
   '@babel/types':
     specifier: ^7.23.5
     version: 7.23.5
+  '@emmetio/codemirror-plugin':
+    specifier: ^1.2.4
+    version: 1.2.4
   '@rollup/plugin-replace':
     specifier: ^5.0.5
     version: 5.0.5
@@ -41,6 +44,9 @@ devDependencies:
   conventional-changelog-cli:
     specifier: ^4.1.0
     version: 4.1.0
+  emmet-monaco-es:
+    specifier: ^5.3.0
+    version: 5.3.0(monaco-editor@0.44.0)
   fflate:
     specifier: ^0.8.1
     version: 0.8.1
@@ -119,14 +125,6 @@ packages:
       js-tokens: 4.0.0
     dev: true
 
-  /@babel/parser@7.23.0:
-    resolution: {integrity: sha512-vvPKKdMemU85V9WE/l5wZEmImpCtLqbnTvqDS2U1fJ96KrxoW7KrXhNsNCblQlg8Ck4b85yxdTyelsMUgFUXiw==}
-    engines: {node: '>=6.0.0'}
-    hasBin: true
-    dependencies:
-      '@babel/types': 7.23.5
-    dev: true
-
   /@babel/parser@7.23.4:
     resolution: {integrity: sha512-vf3Xna6UEprW+7t6EtOmFpHNAuxw3xqPZghy+brsnusscJRW5BMUzzHZc5ICjULee81WeUV2jjakG09MDglJXQ==}
     engines: {node: '>=6.0.0'}
@@ -148,6 +146,10 @@ packages:
     resolution: {integrity: sha512-mgv58UrU3rh4YgbE/TzgLQwJ3pFsHHhCLqY20aJq+9comytTXUDNGG/SMtSeMJdkpxgXSXunBGLD8Boka3JyVA==}
     dependencies:
       '@emmetio/scanner': 1.0.4
+    dev: true
+
+  /@emmetio/codemirror-plugin@1.2.4:
+    resolution: {integrity: sha512-wVw2gqI6X+uVWYVRtTVymzTgbo4hEZIcPCNj4xrXw4l/+L3Qa+tAC/yf+Xy9nenRPCqRq0RLqGiQL+Qf/wYE9Q==}
     dev: true
 
   /@emmetio/css-abbreviation@2.1.8:
@@ -743,24 +745,6 @@ packages:
     resolution: {integrity: sha512-JT5CvrIYYCrmB+dCana8sUqJEcGB1ZDXNLMQ2+42bW995WmNoenijWMUdZfwmuQUTQcEVVIa2OecZzTYWUW9Cg==}
     dev: true
 
-  /@vue/compiler-core@3.3.7:
-    resolution: {integrity: sha512-pACdY6YnTNVLXsB86YD8OF9ihwpolzhhtdLVHhBL6do/ykr6kKXNYABRtNMGrsQXpEXXyAdwvWWkuTbs4MFtPQ==}
-    dependencies:
-      '@babel/parser': 7.23.0
-      '@vue/shared': 3.3.7
-      estree-walker: 2.0.2
-      source-map-js: 1.0.2
-    dev: true
-
-  /@vue/compiler-core@3.3.8:
-    resolution: {integrity: sha512-hN/NNBUECw8SusQvDSqqcVv6gWq8L6iAktUR0UF3vGu2OhzRqcOiAno0FmBJWwxhYEXRlQJT5XnoKsVq1WZx4g==}
-    dependencies:
-      '@babel/parser': 7.23.0
-      '@vue/shared': 3.3.8
-      estree-walker: 2.0.2
-      source-map-js: 1.0.2
-    dev: true
-
   /@vue/compiler-core@3.3.9:
     resolution: {integrity: sha512-+/Lf68Vr/nFBA6ol4xOtJrW+BQWv3QWKfRwGSm70jtXwfhZNF4R/eRgyVJYoxFRhdCTk/F6g99BP0ffPgZihfQ==}
     dependencies:
@@ -768,20 +752,6 @@ packages:
       '@vue/shared': 3.3.9
       estree-walker: 2.0.2
       source-map-js: 1.0.2
-    dev: true
-
-  /@vue/compiler-dom@3.3.7:
-    resolution: {integrity: sha512-0LwkyJjnUPssXv/d1vNJ0PKfBlDoQs7n81CbO6Q0zdL7H1EzqYRrTVXDqdBVqro0aJjo/FOa1qBAPVI4PGSHBw==}
-    dependencies:
-      '@vue/compiler-core': 3.3.7
-      '@vue/shared': 3.3.7
-    dev: true
-
-  /@vue/compiler-dom@3.3.8:
-    resolution: {integrity: sha512-+PPtv+p/nWDd0AvJu3w8HS0RIm/C6VGBIRe24b9hSyNWOAPEUosFZ5diwawwP8ip5sJ8n0Pe87TNNNHnvjs0FQ==}
-    dependencies:
-      '@vue/compiler-core': 3.3.8
-      '@vue/shared': 3.3.8
     dev: true
 
   /@vue/compiler-dom@3.3.9:
@@ -843,8 +813,8 @@ packages:
     dependencies:
       '@volar/language-core': 1.11.1
       '@volar/source-map': 1.11.1
-      '@vue/compiler-dom': 3.3.8
-      '@vue/shared': 3.3.8
+      '@vue/compiler-dom': 3.3.9
+      '@vue/shared': 3.3.9
       computeds: 0.0.1
       minimatch: 9.0.3
       muggle-string: 0.3.1
@@ -859,9 +829,9 @@ packages:
       '@volar/language-core': 1.11.1
       '@volar/language-service': 1.11.1
       '@volar/typescript': 1.11.1
-      '@vue/compiler-dom': 3.3.7
+      '@vue/compiler-dom': 3.3.9
       '@vue/language-core': 1.9.0-alpha.3(typescript@5.3.2)
-      '@vue/shared': 3.3.7
+      '@vue/shared': 3.3.9
       computeds: 0.0.1
       path-browserify: 1.0.1
       volar-service-css: 0.0.17(@volar/language-service@1.11.1)
@@ -917,14 +887,6 @@ packages:
       '@vue/compiler-ssr': 3.3.9
       '@vue/shared': 3.3.9
       vue: 3.3.9(typescript@5.3.2)
-    dev: true
-
-  /@vue/shared@3.3.7:
-    resolution: {integrity: sha512-N/tbkINRUDExgcPTBvxNkvHGu504k8lzlNQRITVnm6YjOjwa4r0nnbd4Jb01sNpur5hAllyRJzSK5PvB9PPwRg==}
-    dev: true
-
-  /@vue/shared@3.3.8:
-    resolution: {integrity: sha512-8PGwybFwM4x8pcfgqEQFy70NaQxASvOC5DJwLQfpArw1UDfUXrJkdxD3BhVTMS+0Lef/TU7YO0Jvr0jJY8T+mw==}
     dev: true
 
   /@vue/shared@3.3.9:
@@ -1402,6 +1364,15 @@ packages:
 
   /eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
+    dev: true
+
+  /emmet-monaco-es@5.3.0(monaco-editor@0.44.0):
+    resolution: {integrity: sha512-+Somf9sB9Smzfl2FV9E19/DA5osHq488dv8KaGavozkv2fo69Y2rY0EoL4vWQk5FpMBc0YfdtiRsuw48Sdxs5g==}
+    peerDependencies:
+      monaco-editor: '>=0.22.0'
+    dependencies:
+      emmet: 2.4.6
+      monaco-editor: 0.44.0
     dev: true
 
   /emmet@2.4.6:
