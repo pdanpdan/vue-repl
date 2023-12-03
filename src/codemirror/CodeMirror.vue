@@ -1,12 +1,14 @@
 <template>
-  <div class="editor" ref="el"></div>
+  <div class="editor" ref="containerRef"></div>
 </template>
 
 <script setup lang="ts">
 import type { ModeSpec, ModeSpecOptions } from 'codemirror'
-import { ref, onMounted, watchEffect, inject } from 'vue'
-import { debounce } from '../utils'
+import { ref, onMounted, onUnmounted, watch, watchEffect, inject } from 'vue'
 import CodeMirror from './codemirror'
+import { debounce } from '../utils'
+import type { Store } from '../store'
+import type { EditorEmits } from '../editor/types'
 
 export interface Props {
   mode?: string | ModeSpec<ModeSpecOptions>
@@ -20,10 +22,13 @@ const props = withDefaults(defineProps<Props>(), {
   readonly: false,
 })
 
-const emit = defineEmits<(e: 'change', value: string) => void>()
+const emit = defineEmits<EditorEmits>()
 
-const el = ref()
-const needAutoResize = inject('autoresize')
+const containerRef = ref<HTMLDivElement>()
+const needAutoResize = inject<boolean>('autoresize')
+const autoSave = inject('autosave') as () => number
+const store = inject<Store>('store')
+const listenersCleanup = [] as Array<() => void>
 
 onMounted(() => {
   const addonOptions = props.readonly
@@ -36,7 +41,7 @@ onMounted(() => {
         keyMap: 'sublime',
       }
 
-  const editor = CodeMirror(el.value!, {
+  const editor = CodeMirror(containerRef.value!, {
     value: '',
     mode: props.mode,
     readOnly: props.readonly,
@@ -44,10 +49,6 @@ onMounted(() => {
     lineWrapping: true,
     lineNumbers: true,
     ...addonOptions,
-  })
-
-  editor.on('change', () => {
-    emit('change', editor.getValue())
   })
 
   watchEffect(() => {
@@ -61,18 +62,69 @@ onMounted(() => {
     editor.setOption('mode', props.mode)
   })
 
+  const saveFn = (save?: boolean) => {
+    emit(
+      'change',
+      editor.getValue(),
+      store!.state.activeFile.filename,
+      save === true
+    )
+  }
+
+  watch(
+    autoSave,
+    (v) => {
+      if (v > 0) {
+        const saveFnDebounced = debounce(() => {
+          saveFn(true)
+        }, v)
+        editor.on('change', () => {
+          saveFn()
+          saveFnDebounced()
+        })
+        editor.on('blur', () => {
+          saveFn(true)
+        })
+      } else {
+        editor.on('change', () => {
+          saveFn()
+        })
+        editor.on('blur', () => {})
+      }
+    },
+    { immediate: true }
+  )
+
+  const saveKbd = (e: KeyboardEvent) => {
+    if ((e.ctrlKey || e.metaKey) && e.code === 'KeyS') {
+      e.preventDefault()
+      saveFn(true)
+    }
+  }
+  containerRef.value?.addEventListener('keydown', saveKbd)
+  listenersCleanup.push(() => {
+    containerRef.value?.removeEventListener('keydown', saveKbd)
+  })
+
   setTimeout(() => {
     editor.refresh()
   }, 50)
 
   if (needAutoResize) {
-    window.addEventListener(
-      'resize',
-      debounce(() => {
-        editor.refresh()
-      })
-    )
+    const resizeFnDebounced = debounce(() => {
+      editor.refresh()
+    })
+    window.addEventListener('resize', resizeFnDebounced)
+    listenersCleanup.push(() => {
+      window.removeEventListener('resize', resizeFnDebounced)
+    })
   }
+})
+
+onUnmounted(() => {
+  const cleanup = listenersCleanup.slice()
+  listenersCleanup.length = 0
+  cleanup.forEach((fn) => fn())
 })
 </script>
 

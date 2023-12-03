@@ -36,6 +36,7 @@ export class File {
   filename: string
   code: string
   hidden: boolean
+  changed: boolean
   compiled = {
     js: '',
     css: '',
@@ -47,6 +48,7 @@ export class File {
     this.filename = filename
     this.code = code
     this.hidden = hidden
+    this.changed = false
   }
 
   get language() {

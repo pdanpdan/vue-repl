@@ -10,8 +10,8 @@ defineOptions({
 const props = defineProps<EditorProps>()
 const emit = defineEmits<EditorEmits>()
 
-const onChange = (code: string) => {
-  emit('change', code)
+const onChange = (code: string, fileName?: string, save?: boolean) => {
+  emit('change', code, fileName, save)
 }
 
 const modes: Record<string, Props['mode']> = {

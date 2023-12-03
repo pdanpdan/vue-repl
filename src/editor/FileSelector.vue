@@ -117,7 +117,10 @@ function horizontalScroll(e: WheelEvent) {
       <div
         v-if="pending !== file"
         class="file"
-        :class="{ active: store.state.activeFile.filename === file }"
+        :class="{
+          active: store.state.activeFile.filename === file,
+          changed: store.state.files[file]?.changed === true,
+        }"
         @click="store.setActive(file)"
         @dblclick="i > 0 && editFileName(file)"
       >
@@ -132,7 +135,10 @@ function horizontalScroll(e: WheelEvent) {
       <div
         v-if="(pending === true && i === files.length - 1) || pending === file"
         class="file pending"
-        :class="{ active: store.state.activeFile.filename === file }"
+        :class="{
+          active: store.state.activeFile.filename === file,
+          changed: store.state.files[file]?.changed === true,
+        }"
       >
         <span class="file pending">{{ pendingFilename }}</span>
         <input
@@ -151,7 +157,10 @@ function horizontalScroll(e: WheelEvent) {
       <div
         v-if="showTsConfig"
         class="file"
-        :class="{ active: store.state.activeFile.filename === tsconfigFile }"
+        :class="{
+          active: store.state.activeFile.filename === tsconfigFile,
+          changed: store.state.files[tsconfigFile]?.changed === true,
+        }"
         @click="store.setActive(tsconfigFile)"
       >
         <span class="label">tsconfig.json</span>
@@ -159,7 +168,10 @@ function horizontalScroll(e: WheelEvent) {
       <div
         v-if="showImportMap"
         class="file"
-        :class="{ active: store.state.activeFile.filename === importMapFile }"
+        :class="{
+          active: store.state.activeFile.filename === importMapFile,
+          changed: store.state.files[importMapFile]?.changed === true,
+        }"
         @click="store.setActive(importMapFile)"
       >
         <span class="label">Import Map</span>
@@ -210,6 +222,15 @@ function horizontalScroll(e: WheelEvent) {
   color: var(--color-branding);
   border-bottom: 3px solid var(--color-branding);
   cursor: text;
+}
+.file.changed:before {
+  content: '';
+  position: absolute;
+  inset: calc(50% - 3px) auto auto 1px;
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background-color: var(--color-branding);
 }
 .file span {
   display: inline-block;

@@ -14,35 +14,34 @@ import * as monaco from 'monaco-editor-core'
 import { initMonaco } from './env'
 import { getOrCreateModel } from './utils'
 import { loadGrammars, loadTheme } from 'monaco-volar'
-import { Store } from '../store'
-import type { PreviewMode } from '../editor/types'
+import { debounce } from '../utils'
+import type { Store } from '../store'
+import type { EditorEmits, PreviewMode } from '../editor/types'
 
-const props = withDefaults(
-  defineProps<{
-    filename: string
-    value?: string
-    readonly?: boolean
-    mode?: PreviewMode
-  }>(),
-  {
-    readonly: false,
-  }
-)
+export interface Props {
+  filename: string
+  value?: string
+  readonly?: boolean
+  mode?: PreviewMode
+}
 
-const emit = defineEmits<{
-  (e: 'change', value: string): void
-}>()
+const props = withDefaults(defineProps<Props>(), {
+  readonly: false,
+})
+
+const emit = defineEmits<EditorEmits>()
 
 const containerRef = ref<HTMLDivElement>()
 const ready = ref(false)
 const editor = shallowRef<monaco.editor.IStandaloneCodeEditor>()
-const store = inject<Store>('store')!
+const replTheme = inject<Ref<'dark' | 'light'>>('theme')!
+const autoSave = inject('autosave') as () => number
+const store = inject('store') as Store
 
 initMonaco(store)
 
 const lang = computed(() => (props.mode === 'css' ? 'css' : 'javascript'))
 
-const replTheme = inject<Ref<'dark' | 'light'>>('theme')!
 onMounted(async () => {
   const theme = await loadTheme(monaco.editor)
   ready.value = true
@@ -139,13 +138,42 @@ onMounted(async () => {
 
   await loadGrammars(monaco, editorInstance)
 
+  const saveFn = (save?: boolean) => {
+    emit(
+      'change',
+      editorInstance.getValue(),
+      store.state.activeFile.filename,
+      save === true
+    )
+  }
+
   editorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-    // ignore save event
+    saveFn(true)
   })
 
-  editorInstance.onDidChangeModelContent(() => {
-    emit('change', editorInstance.getValue())
-  })
+  watch(
+    autoSave,
+    (v) => {
+      if (v > 0) {
+        const saveFnDebounced = debounce(() => {
+          saveFn(true)
+        }, v)
+        editorInstance.onDidChangeModelContent(() => {
+          saveFn()
+          saveFnDebounced()
+        })
+        editorInstance.onDidBlurEditorWidget(() => {
+          saveFn(true)
+        })
+      } else {
+        editorInstance.onDidChangeModelContent(() => {
+          saveFn()
+        })
+        editorInstance.onDidBlurEditorWidget(() => {})
+      }
+    },
+    { immediate: true }
+  )
 
   // update theme
   watch(replTheme, (n) => {

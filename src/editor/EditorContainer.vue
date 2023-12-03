@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import FileSelector from './FileSelector.vue'
 import Message from '../Message.vue'
-import { debounce } from '../utils'
 import { inject, ref, watch } from 'vue'
-import { Store } from '../store'
 import MessageToggle from './MessageToggle.vue'
+import type { Store } from '../store'
 import type { EditorComponentType } from './types'
 
 const SHOW_ERROR_KEY = 'repl_show_error'
@@ -16,9 +15,22 @@ const props = defineProps<{
 const store = inject('store') as Store
 const showMessage = ref(getItem())
 
-const onChange = debounce((code: string) => {
-  store.state.activeFile.code = code
-}, 250)
+function onChange(code: string, fileName?: string, save: boolean = false) {
+  const file =
+    typeof fileName === 'string'
+      ? store.state.files[fileName]
+      : store.state.activeFile
+  if (file) {
+    if (save) {
+      file.code = code
+    }
+
+    const changed = save !== true && code !== file.code
+    if (file.changed !== changed) {
+      file.changed = changed
+    }
+  }
+}
 
 function setItem() {
   localStorage.setItem(SHOW_ERROR_KEY, showMessage.value ? 'true' : 'false')

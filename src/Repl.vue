@@ -10,6 +10,7 @@ export interface Props {
   theme?: 'dark' | 'light'
   editor: EditorComponentType
   store?: Store
+  autoSave?: number
   autoResize?: boolean
   showCompileOutput?: boolean
   showImportMap?: boolean
@@ -33,6 +34,7 @@ export interface Props {
 const props = withDefaults(defineProps<Props>(), {
   theme: 'light',
   store: () => new ReplStore(),
+  autoSave: 250,
   autoResize: true,
   showCompileOutput: true,
   showImportMap: true,
@@ -79,6 +81,7 @@ const editorSlotName = computed(() => (props.layoutReverse ? 'right' : 'left'))
 const outputSlotName = computed(() => (props.layoutReverse ? 'left' : 'right'))
 
 provide('store', store)
+provide('autosave', () => props.autoSave || 0)
 provide('autoresize', props.autoResize)
 provide('import-map', toRef(props, 'showImportMap'))
 provide('tsconfig', toRef(props, 'showTsConfig'))

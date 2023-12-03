@@ -9,8 +9,8 @@ defineOptions({
   editorType: 'monaco',
 })
 
-const onChange = (code: string) => {
-  emit('change', code)
+const onChange = (code: string, fileName?: string, save?: boolean) => {
+  emit('change', code, fileName, save)
 }
 </script>
 
