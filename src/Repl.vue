@@ -1,37 +1,13 @@
 <script setup lang="ts">
 import SplitPane from './SplitPane.vue'
 import Output from './output/Output.vue'
-import { Store, ReplStore, SFCOptions } from './store'
+import { ReplStore } from './store'
 import { provide, ref, toRef, computed } from 'vue'
-import type { EditorComponentType } from './editor/types'
+import type { ReplProps } from './index'
+
 import EditorContainer from './editor/EditorContainer.vue'
 
-export interface Props {
-  theme?: 'dark' | 'light'
-  editor: EditorComponentType
-  store?: Store
-  autoSave?: number
-  autoResize?: boolean
-  showCompileOutput?: boolean
-  showImportMap?: boolean
-  showTsConfig?: boolean
-  clearConsole?: boolean
-  sfcOptions?: SFCOptions
-  layout?: 'horizontal' | 'vertical'
-  layoutReverse?: boolean
-  ssr?: boolean
-  previewOptions?: {
-    headHTML?: string
-    bodyHTML?: string
-    placeholderHTML?: string
-    customCode?: {
-      importCode?: string
-      useCode?: string
-    }
-  }
-}
-
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<ReplProps>(), {
   theme: 'light',
   store: () => new ReplStore(),
   autoSave: 250,

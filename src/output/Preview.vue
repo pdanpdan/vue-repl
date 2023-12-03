@@ -13,15 +13,15 @@ import {
 import srcdoc from './srcdoc.html?raw'
 import { PreviewProxy } from './PreviewProxy'
 import { compileModulesForPreview } from './moduleCompiler'
-import { Store } from '../store'
-import { Props } from '../Repl.vue'
+import type { Store } from '../store'
+import type { ReplProps } from '../index'
 
 const props = defineProps<{ show: boolean; ssr: boolean }>()
 
 const store = inject('store') as Store
 const clearConsole = inject('clear-console') as Ref<boolean>
 
-const previewOptions = inject('preview-options') as Props['previewOptions']
+const previewOptions = inject('preview-options') as ReplProps['previewOptions']
 
 const container = ref()
 const runtimeError = ref()
