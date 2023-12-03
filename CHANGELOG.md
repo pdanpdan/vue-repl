@@ -1,3 +1,12 @@
+## [1.0.4](https://github.com/pdanpdan/vue-repl/compare/v1.0.3...v1.0.4) (2023-12-03)
+
+
+### Bug Fixes
+
+* **editor:** make sure save is triggered when autosave is turned on ([1901a0c](https://github.com/pdanpdan/vue-repl/commit/1901a0c43a54e610cfedff34cbfa0148338ba50b))
+
+
+
 ## [1.0.3](https://github.com/pdanpdan/vue-repl/compare/v1.0.2...v1.0.3) (2023-12-03)
 
 
