@@ -151,6 +151,16 @@ onMounted(async () => {
     saveFn(true)
   })
 
+  let onEditorChange = () => {}
+  let onEditorBlur = () => {}
+
+  editorInstance.onDidChangeModelContent(() => {
+    onEditorChange()
+  })
+  editorInstance.onDidBlurEditorWidget(() => {
+    onEditorBlur()
+  })
+
   watch(
     autoSave,
     (v) => {
@@ -158,18 +168,18 @@ onMounted(async () => {
         const saveFnDebounced = debounce(() => {
           saveFn(true)
         }, v)
-        editorInstance.onDidChangeModelContent(() => {
+        onEditorChange = () => {
           saveFn()
           saveFnDebounced()
-        })
-        editorInstance.onDidBlurEditorWidget(() => {
+        }
+        onEditorBlur = () => {
           saveFn(true)
-        })
+        }
       } else {
-        editorInstance.onDidChangeModelContent(() => {
+        onEditorChange = () => {
           saveFn()
-        })
-        editorInstance.onDidBlurEditorWidget(() => {})
+        }
+        onEditorBlur = () => {}
       }
     },
     { immediate: true }

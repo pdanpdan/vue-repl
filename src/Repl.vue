@@ -2,7 +2,7 @@
 import SplitPane from './SplitPane.vue'
 import Output from './output/Output.vue'
 import { ReplStore } from './store'
-import { provide, ref, toRef, computed } from 'vue'
+import { provide, ref, toRef, unref, computed } from 'vue'
 import type { ReplProps } from './index'
 
 import EditorContainer from './editor/EditorContainer.vue'
@@ -57,7 +57,7 @@ const editorSlotName = computed(() => (props.layoutReverse ? 'right' : 'left'))
 const outputSlotName = computed(() => (props.layoutReverse ? 'left' : 'right'))
 
 provide('store', store)
-provide('autosave', () => props.autoSave || 0)
+provide('autosave', () => unref(props.autoSave) || 0)
 provide('autoresize', props.autoResize)
 provide('import-map', toRef(props, 'showImportMap'))
 provide('tsconfig', toRef(props, 'showTsConfig'))

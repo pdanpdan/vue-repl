@@ -83,6 +83,16 @@ onMounted(() => {
     )
   }, 1)
 
+  let onEditorChange = () => {}
+  let onEditorBlur = () => {}
+
+  editor.on('change', () => {
+    onEditorChange()
+  })
+  editor.on('blur', () => {
+    onEditorBlur()
+  })
+
   watch(
     autoSave,
     (v) => {
@@ -90,18 +100,18 @@ onMounted(() => {
         const saveFnDebounced = debounce(() => {
           saveFn(true)
         }, v)
-        editor.on('change', () => {
+        onEditorChange = () => {
           saveFn()
           saveFnDebounced()
-        })
-        editor.on('blur', () => {
+        }
+        onEditorBlur = () => {
           saveFn(true)
-        })
+        }
       } else {
-        editor.on('change', () => {
+        onEditorChange = () => {
           saveFn()
-        })
-        editor.on('blur', () => {})
+        }
+        onEditorBlur = () => {}
       }
     },
     { immediate: true }
