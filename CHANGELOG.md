@@ -1,16 +1,20 @@
-# [3.0.0](https://github.com/vuejs/repl/compare/v2.9.0...v3.0.0) (2023-11-30)
+# [1.0.0](https://github.com/vuejs/repl/compare/v3.0.0...v1.0.0) (2023-12-03)
+
 
 ### Features
 
-* auto import css + split editor css from main component ([7322589](https://github.com/vuejs/repl/commit/7322589b64742bf8246a0ac4f5bf65e3e991e63f))
+* **editor:** add Emmet for both editors ([02c0079](https://github.com/vuejs/repl/commit/02c0079753bf48cb34973723cb8216025fa7860e))
+* **editor:** implement autosave config ([794e4ce](https://github.com/vuejs/repl/commit/794e4ce43859ce53aad24d08e5ce234705a68b7a))
+* **FileSelector:** edit file name in place and auto resize input on typing ([4c27b9d](https://github.com/vuejs/repl/commit/4c27b9d25e4b6a71a13683a7f9b1c4ea69a9062f))
+* **Message:** move it in front of button/toggles ([18a9f77](https://github.com/vuejs/repl/commit/18a9f7769ecbfc59965e6e5fe493102504f54b1e))
+* **preview:** call customCode (importCode/useCode) on both server and client on SSR ([6a30326](https://github.com/vuejs/repl/commit/6a30326e93b3a0f4354742b9ad516df7d5c78a1c))
+* **toggles:** align 'show error', output, and iOS kbd on bottom and make them not overlap ([c95ae1a](https://github.com/vuejs/repl/commit/c95ae1a0efdf15fa563fe43c01096c6b2a441244))
+* **transform:** allow custom transformers for template and styles ([5869a91](https://github.com/vuejs/repl/commit/5869a91d617edf106406a0bdb1150cf9398f59df))
 
-  This change splits up the CSS between the main Repl component and the two
-  editors. This avoids including Monaco Editor css when using CodeMirror, and
-  vice-versa. In addition, CSS will be auto imported when the relevant
-  JS entries are imported.
 
-  To avoid having to separately import all the CSS, the generated JS now
-  automatically imports the CSS for you. This is breaking because it makes the dist files require a build system that can handle CSS imports from JS.
+
+# [3.0.0](https://github.com/vuejs/repl/compare/v2.9.0...v3.0.0) (2023-11-30)
+
 
 ### Bug Fixes
 
@@ -69,7 +73,11 @@
 
 
 
-## [2.6.1](https://github.com/vuejs/repl/compare/v2.5.8...v2.6.1) (2023-10-26)
+## [2.6.1](https://github.com/vuejs/repl/compare/v2.6.0...v2.6.1) (2023-10-26)
+
+
+
+# [2.6.0](https://github.com/vuejs/repl/compare/v2.5.8...v2.6.0) (2023-10-26)
 
 
 ### Features
