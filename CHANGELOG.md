@@ -1,3 +1,12 @@
+## [1.0.3](https://github.com/pdanpdan/vue-repl/compare/v1.0.2...v1.0.3) (2023-12-03)
+
+
+### Bug Fixes
+
+* **editor:** fix not reactive autosave ([93dde86](https://github.com/pdanpdan/vue-repl/commit/93dde86024b3ef82802dfca99d8576bd1056949c))
+
+
+
 ## [1.0.2](https://github.com/pdanpdan/vue-repl/compare/v1.0.1...v1.0.2) (2023-12-03)
 
 
