@@ -168,6 +168,8 @@ onMounted(async () => {
         const saveFnDebounced = debounce(() => {
           saveFn(true)
         }, v)
+        saveFnDebounced()
+
         onEditorChange = () => {
           saveFn()
           saveFnDebounced()
