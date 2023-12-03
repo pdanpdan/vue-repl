@@ -64,6 +64,12 @@ export class File {
     if (this.filename.endsWith('.ts')) {
       return 'typescript'
     }
+    if (this.filename.endsWith('.md')) {
+      return 'markdown'
+    }
+    if (this.filename.endsWith('.sass') || this.filename.endsWith('.scss')) {
+      return 'scss'
+    }
     return 'javascript'
   }
 }
@@ -107,6 +113,11 @@ export interface Store {
   initialShowOutput: boolean
   initialOutputMode: OutputModes
   customElement: boolean | string | RegExp | (string | RegExp)[]
+  supportedLanguages: string[]
+  transformer?(options: {
+    code: string
+    filename: string
+  }): Promise<{ code?: string; filename?: string; errors?: string[] }>
 }
 
 export interface StoreOptions {
@@ -119,6 +130,11 @@ export interface StoreOptions {
   defaultVueRuntimeProdURL?: string
   defaultVueServerRendererURL?: string
   customElement?: boolean | string | RegExp | (string | RegExp)[]
+  supportedLanguages?: string[]
+  transformer?(options: {
+    code: string
+    filename: string
+  }): Promise<{ code?: string; filename?: string; errors?: string[] }>
 }
 
 export class ReplStore implements Store {
@@ -131,6 +147,11 @@ export class ReplStore implements Store {
   initialOutputMode: OutputModes
   reloadLanguageTools: undefined | (() => void)
   customElement: boolean | string | RegExp | (string | RegExp)[]
+  supportedLanguages: string[]
+  transformer?(options: {
+    code: string
+    filename: string
+  }): Promise<{ code?: string; filename?: string; errors?: string[] }>
 
   private defaultVueRuntimeDevURL: string
   private defaultVueRuntimeProdURL: string
@@ -146,6 +167,8 @@ export class ReplStore implements Store {
     outputMode = 'preview',
     productionMode = false,
     customElement = /\.ce\.vue$/,
+    supportedLanguages,
+    transformer,
   }: StoreOptions = {}) {
     const files: StoreState['files'] = {}
 
@@ -165,6 +188,17 @@ export class ReplStore implements Store {
     this.initialShowOutput = showOutput
     this.customElement = customElement
     this.initialOutputMode = outputMode as OutputModes
+    this.supportedLanguages = [
+      ...new Set([
+        'vue',
+        'js',
+        'ts',
+        'css',
+        'json',
+        ...(supportedLanguages || []),
+      ]),
+    ]
+    this.transformer = transformer
 
     let mainFile = defaultMainFile
     if (!files[mainFile]) {

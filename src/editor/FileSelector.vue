@@ -62,9 +62,9 @@ function doneNameFile() {
   const filename = 'src/' + pendingFilename.value
   const oldFilename = pending.value === true ? '' : pending.value
 
-  if (!/\.(vue|js|ts|css|json)$/.test(filename)) {
+  if (!store.supportedLanguages.some((ext) => filename.endsWith(ext))) {
     store.state.errors = [
-      `Playground only supports *.vue, *.js, *.ts, *.css, *.json files.`,
+      `Playground only supports ${store.supportedLanguages.join(', ')} files.`,
     ]
     return
   }

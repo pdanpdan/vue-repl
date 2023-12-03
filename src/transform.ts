@@ -18,23 +18,48 @@ async function transformTS(src: string) {
 
 export async function compileFile(
   store: Store,
-  { filename, code, compiled }: File
+  file: File
 ): Promise<(string | Error)[]> {
-  if (!code.trim()) {
+  const withTransformer = async (
+    code: string,
+    filename: string
+  ): Promise<[string, string, string[]]> => {
+    if (!store.transformer) return [file.filename, code, []]
+    try {
+      const {
+        code: transformedCode,
+        filename: transformedFilename,
+        errors,
+      } = await store.transformer({ code, filename })
+      return [
+        transformedFilename || filename,
+        transformedCode || code,
+        errors || [],
+      ]
+    } catch (err: any) {
+      return [file.filename, code, [String(err)]]
+    }
+  }
+
+  if (!file.code.trim()) {
     return []
   }
+
+  const { compiled } = file
+  const [filename, code, err] = await withTransformer(file.code, file.filename)
 
   if (filename.endsWith('.css')) {
     compiled.css = code
-    return []
+    return err
   }
 
   if (filename.endsWith('.js') || filename.endsWith('.ts')) {
+    let tsCode = code
     if (filename.endsWith('.ts')) {
-      code = await transformTS(code)
+      tsCode = await transformTS(code)
     }
-    compiled.js = compiled.ssr = code
-    return []
+    compiled.js = compiled.ssr = tsCode
+    return err
   }
 
   if (filename.endsWith('.json')) {
@@ -62,14 +87,40 @@ export async function compileFile(
     return errors
   }
 
-  if (
-    descriptor.styles.some((s) => s.lang) ||
-    (descriptor.template && descriptor.template.lang)
-  ) {
-    return [
-      `lang="x" pre-processors for <template> or <style> are currently not ` +
-        `supported.`,
-    ]
+  for (const style of descriptor.styles) {
+    if (style.lang && style.lang !== 'css') {
+      if (store.supportedLanguages.includes(style.lang) === false) {
+        return [
+          `lang="${style.lang}" pre-processor for <template> is not supported.`,
+        ]
+      }
+      const [, styleCode, styleErr] = await withTransformer(
+        style.content,
+        `${filename}__${descriptor.filename}.style.${style.lang}`
+      )
+      if (styleErr.length) {
+        return styleErr
+      }
+      style.content = styleCode
+      style.lang = 'css'
+    }
+  }
+
+  if (descriptor.template?.lang) {
+    if (store.supportedLanguages.includes(descriptor.template.lang) === false) {
+      return [
+        `lang="${descriptor.template.lang}" pre-processor for <template> is not supported.`,
+      ]
+    }
+    const [, templateCode, templateErr] = await withTransformer(
+      descriptor.template.content,
+      `${filename}__${descriptor.filename}.template.${descriptor.template.lang}`
+    )
+    if (templateErr.length) {
+      return templateErr
+    }
+    descriptor.template.content = templateCode
+    descriptor.template.lang = undefined
   }
 
   const scriptLang =
