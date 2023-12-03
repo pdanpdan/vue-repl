@@ -1,3 +1,12 @@
+## [1.0.2](https://github.com/pdanpdan/vue-repl/compare/v1.0.1...v1.0.2) (2023-12-03)
+
+
+### Bug Fixes
+
+* **codemirror:** debounce change event to prevent locking the editor ([7ef9887](https://github.com/pdanpdan/vue-repl/commit/7ef98874f05195b3537264eee34ebf683dceecee))
+
+
+
 ## [1.0.1](https://github.com/pdanpdan/vue-repl/compare/v1.0.0...v1.0.1) (2023-12-03)
 
 
