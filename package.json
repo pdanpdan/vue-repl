@@ -56,14 +56,25 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vuejs/repl.git"
+    "url": "git+https://github.com/pdanpdan/vue-repl.git"
   },
-  "author": "Evan You",
+  "author": {
+    "name": "Dan Popescu",
+    "email": "pdan.popescu@gmail.com",
+    "url": "https://pdanpdan.github.io"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/pdanpdan"
+  },
+  "contributors": [
+    { "name": "Evan You" }
+  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/vuejs/repl/issues"
+    "url": "https://github.com/pdanpdan/vue-repl/issues"
   },
-  "homepage": "https://github.com/vuejs/repl#readme",
+  "homepage": "https://github.com/pdanpdan/vue-repl#readme",
   "devDependencies": {
     "@babel/types": "^7.23.5",
     "@emmetio/codemirror-plugin": "^1.2.4",
