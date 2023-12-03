@@ -52,7 +52,6 @@ export default mergeConfig(base, {
     // avoid late discovered deps
     include: [
       'onigasm',
-      'typescript',
       'monaco-editor-core/esm/vs/editor/editor.worker',
       'vue/server-renderer',
     ],
@@ -75,7 +74,7 @@ export default mergeConfig(base, {
       output: {
         chunkFileNames: 'chunks/[name]-[hash].js',
       },
-      external: ['vue', 'vue/compiler-sfc'],
+      external: ['vue', 'vue/compiler-sfc', 'typescript'],
     },
   },
 })
