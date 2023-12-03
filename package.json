@@ -1,6 +1,6 @@
 {
   "name": "@pdanpdan/vue-repl",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Vue component for editing Vue components",
   "packageManager": "pnpm@8.11.0",
   "type": "module",
@@ -68,7 +68,9 @@
     "url": "https://github.com/sponsors/pdanpdan"
   },
   "contributors": [
-    { "name": "Evan You" }
+    {
+      "name": "Evan You"
+    }
   ],
   "license": "MIT",
   "bugs": {
