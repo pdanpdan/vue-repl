@@ -74,14 +74,14 @@ onMounted(() => {
     editor.setOption('mode', props.mode)
   })
 
-  const saveFn = (save?: boolean) => {
+  const saveFn = debounce((save?: boolean) => {
     emit(
       'change',
       editor.getValue(),
       store!.state.activeFile.filename,
       save === true
     )
-  }
+  }, 1)
 
   watch(
     autoSave,
