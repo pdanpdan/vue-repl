@@ -47,6 +47,12 @@ watch(
   }
 )
 
+watch(autoSave, (newVal, oldVal) => {
+  if (newVal > 0 && oldVal === 0) {
+    onSave()
+  }
+})
+
 function onChange(code: string, fileName?: string) {
   const file =
     typeof fileName === 'string'
