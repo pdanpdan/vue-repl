@@ -64,6 +64,7 @@ onMounted(() => {
   watch(
     () => props.value,
     (value) => {
+      if (!editorInstance) return
       const cur = editorInstance.getValue()
       const val = typeof value !== 'string' ? '' : value
       if (cur !== val) {
@@ -75,6 +76,7 @@ onMounted(() => {
   watch(
     () => props.mode,
     (mode) => {
+      if (!editorInstance) return
       editorInstance.setOption('mode', mode)
     }
   )
@@ -82,16 +84,19 @@ onMounted(() => {
   watch(
     () => props.filename,
     () => {
+      if (!editorInstance) return
       editorInstance.focus()
     }
   )
 
   setTimeout(() => {
+    if (!editorInstance) return
     editorInstance.refresh()
   }, 50)
 
   if (needAutoResize) {
     const resizeFnDebounced = debounce(() => {
+      if (!editorInstance) return
       editorInstance.refresh()
     })
     window.addEventListener('resize', resizeFnDebounced)

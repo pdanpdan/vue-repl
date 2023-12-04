@@ -32,6 +32,7 @@ const store = inject('store') as Store
 initMonaco(store)
 
 const lang = computed(() => (props.mode === 'css' ? 'css' : 'javascript'))
+let editorInstanceMounted = false
 
 onMounted(async () => {
   const theme = await loadTheme(monaco.editor)
@@ -62,6 +63,7 @@ onMounted(async () => {
     fixedOverflowWidgets: true,
   })
   editor.value = editorInstance
+  editorInstanceMounted = true
 
   // Support for semantic highlighting
   const t = (editorInstance as any)._themeService._theme
@@ -88,6 +90,7 @@ onMounted(async () => {
   watch(
     () => props.value,
     (value) => {
+      if (!editorInstance || !editorInstanceMounted) return
       const cur = editorInstance.getValue()
       const val = typeof value !== 'string' ? '' : value
       if (cur !== val) {
@@ -99,6 +102,7 @@ onMounted(async () => {
 
   // update theme
   watch(replTheme, (t) => {
+    if (!editorInstance || !editorInstanceMounted) return
     editorInstance.updateOptions({
       theme: t === 'light' ? theme.light : theme.dark,
     })
@@ -106,13 +110,14 @@ onMounted(async () => {
 
   if (props.readonly) {
     watch(lang, (l) => {
+      if (!editorInstance || !editorInstanceMounted) return
       monaco.editor.setModelLanguage(editorInstance.getModel()!, l)
     })
   } else {
     watch(
       () => props.filename,
       (newFilename, oldFilename) => {
-        if (!editorInstance) return
+        if (!editorInstance || !editorInstanceMounted) return
         const newFile = store.state.files[newFilename]
         if (!newFile) return null
         const model = getOrCreateModel(
@@ -151,6 +156,7 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
+  editorInstanceMounted = false
   editor.value?.dispose()
 })
 </script>
