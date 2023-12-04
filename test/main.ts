@@ -46,6 +46,7 @@ const App = {
         autoSave: 250,
         editor: MonacoEditor,
         // layout: 'vertical',
+        // layoutReverse: true,
         ssr: true,
         sfcOptions: {
           script: {
