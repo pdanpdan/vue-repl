@@ -58,7 +58,12 @@ export class File {
     if (this.filename.endsWith('.html')) {
       return 'html'
     }
-    if (this.filename.endsWith('.css')) {
+    if (
+      this.filename.endsWith('.css') ||
+      this.filename.endsWith('.sass') ||
+      this.filename.endsWith('.scss') ||
+      this.filename.endsWith('.less')
+    ) {
       return 'css'
     }
     if (this.filename.endsWith('.ts')) {
@@ -66,9 +71,6 @@ export class File {
     }
     if (this.filename.endsWith('.md')) {
       return 'markdown'
-    }
-    if (this.filename.endsWith('.sass') || this.filename.endsWith('.scss')) {
-      return 'scss'
     }
     return 'javascript'
   }

@@ -16,6 +16,10 @@ const onChange = (code: string, fileName?: string, save?: boolean) => {
 
 const modes: Record<string, Props['mode']> = {
   css: 'css',
+  sass: 'sass',
+  scss: 'css',
+  less: 'css',
+  md: 'gfm',
   html: 'htmlmixed',
   js: {
     name: 'javascript',

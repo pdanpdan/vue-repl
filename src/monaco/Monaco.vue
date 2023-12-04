@@ -16,16 +16,9 @@ import { getOrCreateModel } from './utils'
 import { loadGrammars, loadTheme } from 'monaco-volar'
 import { debounce } from '../utils'
 import type { Store } from '../store'
-import type { EditorEmits, PreviewMode } from '../editor/types'
+import type { EditorProps, EditorEmits } from '../editor/types'
 
-export interface Props {
-  filename: string
-  value?: string
-  readonly?: boolean
-  mode?: PreviewMode
-}
-
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<EditorProps>(), {
   readonly: false,
 })
 
