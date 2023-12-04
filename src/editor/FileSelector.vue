@@ -226,7 +226,7 @@ function horizontalScroll(e: WheelEvent) {
 .file.changed:before {
   content: '';
   position: absolute;
-  inset: calc(50% - 3px) auto auto 1px;
+  inset: 14px auto auto 1px;
   width: 6px;
   height: 6px;
   border-radius: 3px;
