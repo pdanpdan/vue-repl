@@ -21,11 +21,11 @@ export function initMonaco(store: Store) {
 
   watchEffect(() => {
     // create a model for each file in the store
-    for (const filename in store.state.files) {
-      const file = store.state.files[filename]
-      if (editor.getModel(Uri.parse(`file:///${filename}`))) continue
+    for (const fileName in store.state.files) {
+      const file = store.state.files[fileName]
+      if (editor.getModel(Uri.parse(`file:///${fileName}`))) continue
       getOrCreateModel(
-        Uri.parse(`file:///${filename}`),
+        Uri.parse(`file:///${fileName}`),
         file.language,
         file.code
       )

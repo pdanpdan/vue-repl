@@ -32,8 +32,8 @@ function startAddFile() {
 
   while (true) {
     let hasConflict = false
-    for (const filename in store.state.files) {
-      if (stripSrcPrefix(filename) === name) {
+    for (const fileName in store.state.files) {
+      if (stripSrcPrefix(fileName) === name) {
         hasConflict = true
         name = `Comp${++i}.vue`
         break
