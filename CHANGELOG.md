@@ -1,3 +1,20 @@
+## [1.0.5](https://github.com/pdanpdan/vue-repl/compare/v1.0.4...v1.0.5) (2023-12-04)
+
+
+### Bug Fixes
+
+* **editor:** pass language mode to editors ([75a29d8](https://github.com/pdanpdan/vue-repl/commit/75a29d826914fac54c38b33975e0955d360d2633))
+* **FileSelector:** fix position of changed file marker ([a229f55](https://github.com/pdanpdan/vue-repl/commit/a229f557bdee72e9fd229799ce40720b9a581f05))
+* **layout:** fix output/code label with layoutReverse; fix CodeMirror not showing content when starting with preview (mobile) ([6327b15](https://github.com/pdanpdan/vue-repl/commit/6327b158079cedc5de252093b1e4aadb29bd28a2))
+
+
+### Features
+
+* **editor:** major refactor for autoSave ([20e1340](https://github.com/pdanpdan/vue-repl/commit/20e1340fb51d684765f5d16efa1b98e583332658))
+* **llayout:** usee 10dvh for height with fallback to 100vh ([37a9455](https://github.com/pdanpdan/vue-repl/commit/37a94556310d4964d3ef63667818d9b6ada1d8b2))
+
+
+
 ## [1.0.4](https://github.com/pdanpdan/vue-repl/compare/v1.0.3...v1.0.4) (2023-12-03)
 
 
