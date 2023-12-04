@@ -1,4 +1,4 @@
-import { version, reactive, watchEffect, watch } from 'vue'
+import { version, reactive, watch } from 'vue'
 import * as defaultCompiler from 'vue/compiler-sfc'
 import { compileFile } from './transform'
 import { utoa, atou } from './utils'
@@ -35,8 +35,9 @@ const tsconfig = {
 export class File {
   filename: string
   code: string
-  hidden: boolean
+  codeNext: string
   changed: boolean
+  hidden: boolean
   compiled = {
     js: '',
     css: '',
@@ -47,8 +48,40 @@ export class File {
   constructor(filename: string, code = '', hidden = false) {
     this.filename = filename
     this.code = code
-    this.hidden = hidden
+    this.codeNext = code
     this.changed = false
+    this.hidden = hidden
+
+    watch(
+      () => this.code,
+      () => {
+        if (this.codeNext !== this.code) {
+          this.codeNext = this.code
+        }
+        if (this.changed === true) {
+          this.changed = false
+        }
+      }
+    )
+  }
+
+  change(code: string) {
+    if (this.codeNext !== code) {
+      this.codeNext = code
+    }
+    const changed = this.codeNext !== this.code
+    if (this.changed !== changed) {
+      this.changed = changed
+    }
+  }
+
+  save() {
+    if (this.code !== this.codeNext) {
+      this.code = this.codeNext
+    }
+    if (this.changed === true) {
+      this.changed = false
+    }
   }
 
   get language() {
@@ -230,10 +263,28 @@ export class ReplStore implements Store {
 
   // don't start compiling until the options are set
   init() {
-    watchEffect(() =>
-      compileFile(this, this.state.activeFile).then(
-        (errs) => (this.state.errors = errs)
-      )
+    watch(
+      () => [this.state.activeFile.filename, this.state.activeFile.code],
+      (newFile, oldFile) => {
+        this.state.errors = []
+
+        if (
+          oldFile &&
+          oldFile[0] !== newFile[0] &&
+          this.state.files[oldFile?.[0]!]?.changed
+        ) {
+          setTimeout(() => {
+            compileFile(this, this.state.files[oldFile?.[0]!]).then(
+              (errs) => (this.state.errors = [...this.state.errors, ...errs])
+            )
+          }, 1)
+        }
+
+        compileFile(this, this.state.files[newFile[0]]).then(
+          (errs) => (this.state.errors = [...this.state.errors, ...errs])
+        )
+      },
+      { immediate: true }
     )
 
     watch(

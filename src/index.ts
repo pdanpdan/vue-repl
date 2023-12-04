@@ -1,6 +1,5 @@
 import type { EditorComponentType } from './editor/types'
 import type { Store, SFCOptions } from './store'
-import type { MaybeRefOrGetter } from 'vue'
 
 export { default as Repl } from './Repl.vue'
 export { default as Preview } from './output/Preview.vue'
@@ -13,7 +12,7 @@ export interface ReplProps {
   theme?: 'dark' | 'light'
   editor: EditorComponentType
   store?: Store
-  autoSave?: MaybeRefOrGetter<number>
+  autoSave?: number
   autoResize?: boolean
   showCompileOutput?: boolean
   showImportMap?: boolean

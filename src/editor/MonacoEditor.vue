@@ -10,8 +10,12 @@ defineOptions({
   editorType: 'monaco',
 })
 
-const onChange = (code: string, fileName?: string, save?: boolean) => {
-  emit('change', code, fileName, save)
+const onChange = (code: string, filename?: string) => {
+  emit('change', code, filename)
+}
+
+const onSave = (filename?: string) => {
+  emit('save', filename)
 }
 
 const activeMode = computed(() => {
@@ -26,10 +30,11 @@ const activeMode = computed(() => {
 
 <template>
   <Monaco
-    @change="onChange"
-    :filename="filename"
     :value="value"
+    :filename="filename"
     :readonly="readonly"
     :mode="activeMode"
+    @change="onChange"
+    @save="onSave"
   />
 </template>
