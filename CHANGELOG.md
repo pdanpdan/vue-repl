@@ -1,3 +1,12 @@
+## [1.0.7](https://github.com/pdanpdan/vue-repl/compare/v1.0.6...v1.0.7) (2023-12-04)
+
+
+### Features
+
+* **editor:** save all files when changing from manual save to auto save ([d841cff](https://github.com/pdanpdan/vue-repl/commit/d841cff8b16600425ebd889b292dc58cb124405e))
+
+
+
 ## [1.0.6](https://github.com/pdanpdan/vue-repl/compare/v1.0.5...v1.0.6) (2023-12-04)
 
 
