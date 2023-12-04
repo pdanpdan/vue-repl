@@ -32,8 +32,8 @@ function startAddFile() {
 
   while (true) {
     let hasConflict = false
-    for (const filename in store.state.files) {
-      if (stripSrcPrefix(filename) === name) {
+    for (const fileName in store.state.files) {
+      if (stripSrcPrefix(fileName) === name) {
         hasConflict = true
         name = `Comp${++i}.vue`
         break
@@ -226,7 +226,7 @@ function horizontalScroll(e: WheelEvent) {
 .file.changed:before {
   content: '';
   position: absolute;
-  inset: calc(50% - 3px) auto auto 1px;
+  inset: 14px auto auto 1px;
   width: 6px;
   height: 6px;
   border-radius: 3px;

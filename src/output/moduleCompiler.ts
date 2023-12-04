@@ -23,9 +23,9 @@ export function compileModulesForPreview(store: Store, isSSR = false) {
 
   if (!isSSR) {
     // also add css files that are not imported
-    for (const filename in store.state.files) {
-      if (filename.endsWith('.css')) {
-        const file = store.state.files[filename]
+    for (const fileName in store.state.files) {
+      if (fileName.endsWith('.css')) {
+        const file = store.state.files[fileName]
         if (!seen.has(file)) {
           processed.push(
             `\nwindow.__css__.push(${JSON.stringify(file.compiled.css)})`

@@ -13,5 +13,6 @@ export interface EditorProps {
 }
 
 export interface EditorEmits {
-  (e: 'change', code: string, fileName?: string, save?: boolean): void
+  (e: 'change', code: string, fileName?: string): void
+  (e: 'save', fileName?: string): void
 }

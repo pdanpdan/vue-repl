@@ -14,18 +14,10 @@ import * as monaco from 'monaco-editor-core'
 import { initMonaco } from './env'
 import { getOrCreateModel } from './utils'
 import { loadGrammars, loadTheme } from 'monaco-volar'
-import { debounce } from '../utils'
 import type { Store } from '../store'
-import type { EditorEmits, PreviewMode } from '../editor/types'
+import type { EditorProps, EditorEmits } from '../editor/types'
 
-export interface Props {
-  filename: string
-  value?: string
-  readonly?: boolean
-  mode?: PreviewMode
-}
-
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<EditorProps>(), {
   readonly: false,
 })
 
@@ -35,7 +27,6 @@ const containerRef = ref<HTMLDivElement>()
 const ready = ref(false)
 const editor = shallowRef<monaco.editor.IStandaloneCodeEditor>()
 const replTheme = inject<Ref<'dark' | 'light'>>('theme')!
-const autoSave = inject('autosave') as () => number
 const store = inject('store') as Store
 
 initMonaco(store)
@@ -60,7 +51,7 @@ onMounted(async () => {
     theme: replTheme.value === 'light' ? theme.light : theme.dark,
     readOnly: props.readonly,
     automaticLayout: true,
-    scrollBeyondLastLine: false,
+    scrollBeyondLastLine: true,
     minimap: {
       enabled: false,
     },
@@ -97,27 +88,37 @@ onMounted(async () => {
   watch(
     () => props.value,
     (value) => {
-      if (editorInstance.getValue() === value) return
-      editorInstance.setValue(value || '')
+      const cur = editorInstance.getValue()
+      const val = typeof value !== 'string' ? '' : value
+      if (cur !== val) {
+        editorInstance.setValue(val)
+      }
     },
     { immediate: true }
   )
 
-  watch(lang, (lang) =>
-    monaco.editor.setModelLanguage(editorInstance.getModel()!, lang)
-  )
+  // update theme
+  watch(replTheme, (t) => {
+    editorInstance.updateOptions({
+      theme: t === 'light' ? theme.light : theme.dark,
+    })
+  })
 
-  if (!props.readonly) {
+  if (props.readonly) {
+    watch(lang, (l) => {
+      monaco.editor.setModelLanguage(editorInstance.getModel()!, l)
+    })
+  } else {
     watch(
       () => props.filename,
-      (_, oldFilename) => {
+      (newFilename, oldFilename) => {
         if (!editorInstance) return
-        const file = store.state.files[props.filename]
-        if (!file) return null
+        const newFile = store.state.files[newFilename]
+        if (!newFile) return null
         const model = getOrCreateModel(
-          monaco.Uri.parse(`file:///${props.filename}`),
-          file.language,
-          file.code
+          monaco.Uri.parse(`file:///${newFilename}`),
+          newFile.language,
+          newFile.codeNext
         )
 
         const oldFile = oldFilename ? store.state.files[oldFilename] : null
@@ -127,72 +128,26 @@ onMounted(async () => {
 
         editorInstance.setModel(model)
 
-        if (file.editorViewState) {
-          editorInstance.restoreViewState(file.editorViewState)
-          editorInstance.focus()
+        if (newFile.editorViewState) {
+          editorInstance.restoreViewState(newFile.editorViewState)
         }
+        editorInstance.focus()
       },
       { immediate: true }
     )
+    editorInstance.addCommand(
+      monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS,
+      () => {
+        emit('save', props.filename)
+      }
+    )
+
+    editorInstance.onDidChangeModelContent(() => {
+      emit('change', editorInstance.getValue(), props.filename)
+    })
   }
 
   await loadGrammars(monaco, editorInstance)
-
-  const saveFn = (save?: boolean) => {
-    emit(
-      'change',
-      editorInstance.getValue(),
-      store.state.activeFile.filename,
-      save === true
-    )
-  }
-
-  editorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-    saveFn(true)
-  })
-
-  let onEditorChange = () => {}
-  let onEditorBlur = () => {}
-
-  editorInstance.onDidChangeModelContent(() => {
-    onEditorChange()
-  })
-  editorInstance.onDidBlurEditorWidget(() => {
-    onEditorBlur()
-  })
-
-  watch(
-    autoSave,
-    (v) => {
-      if (v > 0) {
-        const saveFnDebounced = debounce(() => {
-          saveFn(true)
-        }, v)
-        saveFnDebounced()
-
-        onEditorChange = () => {
-          saveFn()
-          saveFnDebounced()
-        }
-        onEditorBlur = () => {
-          saveFn(true)
-        }
-      } else {
-        onEditorChange = () => {
-          saveFn()
-        }
-        onEditorBlur = () => {}
-      }
-    },
-    { immediate: true }
-  )
-
-  // update theme
-  watch(replTheme, (n) => {
-    editorInstance.updateOptions({
-      theme: n === 'light' ? theme.light : theme.dark,
-    })
-  })
 })
 
 onBeforeUnmount(() => {

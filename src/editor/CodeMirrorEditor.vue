@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import CodeMirror, { type Props } from '../codemirror/CodeMirror.vue'
 import { computed } from 'vue'
+import CodeMirror, { type Props } from '../codemirror/CodeMirror.vue'
 import type { EditorEmits, EditorProps } from './types'
 
 defineOptions({
@@ -10,12 +10,20 @@ defineOptions({
 const props = defineProps<EditorProps>()
 const emit = defineEmits<EditorEmits>()
 
-const onChange = (code: string, fileName?: string, save?: boolean) => {
-  emit('change', code, fileName, save)
+const onChange = (code: string, filename?: string) => {
+  emit('change', code, filename)
+}
+
+const onSave = (filename?: string) => {
+  emit('save', filename)
 }
 
 const modes: Record<string, Props['mode']> = {
   css: 'css',
+  sass: 'sass',
+  scss: 'css',
+  less: 'css',
+  md: 'gfm',
   html: 'htmlmixed',
   js: {
     name: 'javascript',
@@ -39,5 +47,12 @@ const activeMode = computed(() => {
 </script>
 
 <template>
-  <CodeMirror @change="onChange" :value="value" :mode="activeMode" />
+  <CodeMirror
+    :value="value"
+    :filename="filename"
+    :readonly="readonly"
+    :mode="activeMode"
+    @change="onChange"
+    @save="onSave"
+  />
 </template>

@@ -4,30 +4,28 @@
 
 <script setup lang="ts">
 import type { ModeSpec, ModeSpecOptions } from 'codemirror'
-import { ref, onMounted, onUnmounted, watch, watchEffect, inject } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch, inject } from 'vue'
 import CodeMirror from './codemirror'
 import { debounce } from '../utils'
-import type { Store } from '../store'
-import type { EditorEmits } from '../editor/types'
+import type { EditorProps, EditorEmits } from '../editor/types'
 
 export interface Props {
+  filename: EditorProps['filename']
+  value?: EditorProps['value']
+  readonly?: EditorProps['readonly']
   mode?: string | ModeSpec<ModeSpecOptions>
-  value?: string
-  readonly?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  mode: 'htmlmixed',
   value: '',
   readonly: false,
+  mode: 'htmlmixed',
 })
 
 const emit = defineEmits<EditorEmits>()
 
 const containerRef = ref<HTMLDivElement>()
 const needAutoResize = inject<boolean>('autoresize')
-const autoSave = inject('autosave') as () => number
-const store = inject<Store>('store')
 const listenersCleanup = [] as Array<() => void>
 
 onMounted(() => {
@@ -53,8 +51,8 @@ onMounted(() => {
         },
       }
 
-  const editor = CodeMirror(containerRef.value!, {
-    value: '',
+  const editorInstance = CodeMirror(containerRef.value!, {
+    value: props.value,
     mode: props.mode,
     readOnly: props.readonly,
     tabSize: 2,
@@ -63,89 +61,64 @@ onMounted(() => {
     ...addonOptions,
   })
 
-  watchEffect(() => {
-    const cur = editor.getValue()
-    if (props.value !== cur) {
-      editor.setValue(props.value)
-    }
-  })
-
-  watchEffect(() => {
-    editor.setOption('mode', props.mode)
-  })
-
-  const saveFn = debounce((save?: boolean) => {
-    emit(
-      'change',
-      editor.getValue(),
-      store!.state.activeFile.filename,
-      save === true
-    )
-  }, 1)
-
-  let onEditorChange = () => {}
-  let onEditorBlur = () => {}
-
-  editor.on('change', () => {
-    onEditorChange()
-  })
-  editor.on('blur', () => {
-    onEditorBlur()
-  })
-
   watch(
-    autoSave,
-    (v) => {
-      if (v > 0) {
-        const saveFnDebounced = debounce(() => {
-          saveFn(true)
-        }, v)
-        saveFnDebounced()
-
-        onEditorChange = () => {
-          saveFn()
-          saveFnDebounced()
-        }
-        onEditorBlur = () => {
-          saveFn(true)
-        }
-      } else {
-        onEditorChange = () => {
-          saveFn()
-        }
-        onEditorBlur = () => {}
+    () => props.value,
+    (value) => {
+      const cur = editorInstance.getValue()
+      const val = typeof value !== 'string' ? '' : value
+      if (cur !== val) {
+        editorInstance.setValue(val)
       }
-    },
-    { immediate: true }
+    }
   )
 
-  const saveKbd = (e: KeyboardEvent) => {
-    if ((e.ctrlKey || e.metaKey) && e.code === 'KeyS') {
-      e.preventDefault()
-      saveFn(true)
+  watch(
+    () => props.mode,
+    (mode) => {
+      editorInstance.setOption('mode', mode)
     }
-  }
-  containerRef.value?.addEventListener('keydown', saveKbd)
-  listenersCleanup.push(() => {
-    containerRef.value?.removeEventListener('keydown', saveKbd)
-  })
+  )
+
+  watch(
+    () => props.filename,
+    () => {
+      editorInstance.focus()
+    }
+  )
 
   setTimeout(() => {
-    editor.refresh()
+    editorInstance.refresh()
   }, 50)
 
   if (needAutoResize) {
     const resizeFnDebounced = debounce(() => {
-      editor.refresh()
+      editorInstance.refresh()
     })
     window.addEventListener('resize', resizeFnDebounced)
     listenersCleanup.push(() => {
       window.removeEventListener('resize', resizeFnDebounced)
     })
   }
+
+  if (props.readonly !== true) {
+    editorInstance.on('change', () => {
+      emit('change', editorInstance.getValue(), props.filename)
+    })
+
+    const saveKbd = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.code === 'KeyS') {
+        e.preventDefault()
+        emit('save', props.filename)
+      }
+    }
+    containerRef.value?.addEventListener('keydown', saveKbd)
+    listenersCleanup.push(() => {
+      containerRef.value?.removeEventListener('keydown', saveKbd)
+    })
+  }
 })
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
   const cleanup = listenersCleanup.slice()
   listenersCleanup.length = 0
   cleanup.forEach((fn) => fn())
