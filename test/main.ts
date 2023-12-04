@@ -1,5 +1,6 @@
 import { createApp, h, watchEffect } from 'vue'
 import { Repl, ReplStore } from '../src'
+import type { ReplProps } from '../src'
 import MonacoEditor from '../src/editor/MonacoEditor.vue'
 // import CodeMirrorEditor from '../src/editor/CodeMirrorEditor.vue'
 ;(window as any).process = { env: {} }
@@ -42,6 +43,7 @@ const App = {
       h(Repl, {
         store,
         theme: 'dark',
+        autoSave: 250,
         editor: MonacoEditor,
         // layout: 'vertical',
         ssr: true,
@@ -52,7 +54,7 @@ const App = {
         },
         // showCompileOutput: false,
         // showImportMap: false
-      })
+      } as ReplProps)
   },
 }
 
