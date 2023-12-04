@@ -1,3 +1,17 @@
+## [1.0.6](https://github.com/pdanpdan/vue-repl/compare/v1.0.5...v1.0.6) (2023-12-04)
+
+
+### Bug Fixes
+
+* **editor:** guard for existance of editor instance in watchers ([13a3def](https://github.com/pdanpdan/vue-repl/commit/13a3def38f67c13b27da62477ef012e72c6641d9))
+
+
+### Features
+
+* **CodeMirror:** load highlighter for sass and md ([5f46fcb](https://github.com/pdanpdan/vue-repl/commit/5f46fcba071053bfd4f20491d97a3398b2924624))
+
+
+
 ## [1.0.5](https://github.com/pdanpdan/vue-repl/compare/v1.0.4...v1.0.5) (2023-12-04)
 
 
