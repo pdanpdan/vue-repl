@@ -65,6 +65,8 @@ onMounted(async () => {
   editor.value = editorInstance
   editorInstanceMounted = true
 
+  let currentModelFilename = ''
+
   // Support for semantic highlighting
   const t = (editorInstance as any)._themeService._theme
   t.getTokenStyleMetadata = (
@@ -90,7 +92,12 @@ onMounted(async () => {
   watch(
     () => props.value,
     (value) => {
-      if (!editorInstance || !editorInstanceMounted) return
+      if (
+        !editorInstance ||
+        !editorInstanceMounted ||
+        (props.readonly !== true && currentModelFilename !== props.filename)
+      )
+        return
       const cur = editorInstance.getValue()
       const val = typeof value !== 'string' ? '' : value
       if (cur !== val) {
@@ -135,8 +142,16 @@ onMounted(async () => {
 
         if (newFile.editorViewState) {
           editorInstance.restoreViewState(newFile.editorViewState)
+          editorInstance.focus()
         }
-        editorInstance.focus()
+
+        currentModelFilename = newFilename
+
+        const cur = editorInstance.getValue()
+        const val = typeof props.value !== 'string' ? '' : props.value
+        if (cur !== val) {
+          editorInstance.setValue(val)
+        }
       },
       { immediate: true }
     )
