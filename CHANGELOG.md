@@ -1,3 +1,18 @@
+## [1.0.8](https://github.com/pdanpdan/vue-repl/compare/v1.0.7...v1.0.8) (2023-12-05)
+
+
+### Bug Fixes
+
+* **monaco:** dispose of languageSelectionListener for static CDN files ([df695a1](https://github.com/pdanpdan/vue-repl/commit/df695a19567ed71ee48ecd6cb4af004afffba077))
+* **monaco:** ensure value is only set after the editor model is set for current file (if not readonly) ([bd16336](https://github.com/pdanpdan/vue-repl/commit/bd16336a518ed55de02e67f957efee279c4cf540))
+
+
+### Reverts
+
+* **monaco:** do not use scrollBeyondLastLine - it looks bad ([ff2b1dc](https://github.com/pdanpdan/vue-repl/commit/ff2b1dc156ab16820503bb25880eee7c3e67b0d4))
+
+
+
 ## [1.0.7](https://github.com/pdanpdan/vue-repl/compare/v1.0.6...v1.0.7) (2023-12-04)
 
 
