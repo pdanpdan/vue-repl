@@ -240,7 +240,7 @@ function horizontalScroll(e: WheelEvent) {
 .file.pending span {
   min-width: 50px;
   padding-right: 32px;
-  background-color: rgba(200, 200, 200, .2);
+  background-color: rgba(200, 200, 200, 0.2);
 }
 .file.pending input {
   position: absolute;
