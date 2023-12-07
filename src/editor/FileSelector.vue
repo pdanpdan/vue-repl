@@ -241,10 +241,11 @@ function horizontalScroll(e: WheelEvent) {
   min-width: 50px;
   padding-right: 32px;
   background-color: rgba(200, 200, 200, 0.2);
+  color: transparent;
 }
 .file.pending input {
   position: absolute;
-  inset: 8px 7px 6px;
+  inset: 8px 7px unset 6px;
   font-size: 13px;
   font-family: var(--font-code);
   line-height: 20px;
