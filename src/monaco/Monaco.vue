@@ -52,7 +52,7 @@ onMounted(async () => {
     theme: replTheme.value === 'light' ? theme.light : theme.dark,
     readOnly: props.readonly,
     automaticLayout: true,
-    scrollBeyondLastLine: false,
+    scrollBeyondLastLine: true,
     minimap: {
       enabled: false,
     },
