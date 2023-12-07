@@ -245,7 +245,7 @@ function horizontalScroll(e: WheelEvent) {
 }
 .file.pending input {
   position: absolute;
-  inset: 8px 7px unset 6px;
+  inset: 8px 7px auto;
   font-size: 13px;
   font-family: var(--font-code);
   line-height: 20px;
