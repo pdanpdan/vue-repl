@@ -1,3 +1,13 @@
+## [1.0.11](https://github.com/pdanpdan/vue-repl/compare/v1.0.10...v1.0.11) (2023-12-07)
+
+
+### Bug Fixes
+
+* **editor:** re-enable scroll beyond last line in monaco ([4b7ec8d](https://github.com/pdanpdan/vue-repl/commit/4b7ec8dc601ec0573da94a9253860085c09e88c8))
+* **FileSelector:** do not position file name field on bottom ([04fd2dd](https://github.com/pdanpdan/vue-repl/commit/04fd2dd6955095b87753c5ac83a77d5d2dccf970))
+
+
+
 ## [1.0.10](https://github.com/pdanpdan/vue-repl/compare/v1.0.9...v1.0.10) (2023-12-07)
 
 
