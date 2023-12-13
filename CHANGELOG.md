@@ -1,3 +1,13 @@
+## [1.0.13](https://github.com/pdanpdan/vue-repl/compare/v1.0.12...v1.0.13) (2023-12-13)
+
+
+### Bug Fixes
+
+* **FileSelector:** keep edited tab bg height when file name is empty ([9ab42b6](https://github.com/pdanpdan/vue-repl/commit/9ab42b617020279ec2bd7890976978d1b0522680)), closes [/github.com/vuejs/repl/pull/178#issuecomment-1853403505](https://github.com//github.com/vuejs/repl/pull/178/issues/issuecomment-1853403505)
+* **FileSelector:** only mark edited tab as active if it is displayed in the editor below ([ac81485](https://github.com/pdanpdan/vue-repl/commit/ac8148503ba2885c3c5d43da4c9ba586e578012f)), closes [/github.com/vuejs/repl/pull/178#pullrequestreview-1778971029](https://github.com//github.com/vuejs/repl/pull/178/issues/pullrequestreview-1778971029)
+
+
+
 ## [1.0.12](https://github.com/pdanpdan/vue-repl/compare/v1.0.11...v1.0.12) (2023-12-10)
 
 
