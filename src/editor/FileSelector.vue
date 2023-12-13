@@ -136,7 +136,7 @@ function horizontalScroll(e: WheelEvent) {
         v-if="(pending === true && i === files.length - 1) || pending === file"
         class="file pending"
         :class="{
-          active: store.state.activeFile.filename === file,
+          active: pending === file,
           changed: store.state.files[file]?.changed === true,
         }"
       >
