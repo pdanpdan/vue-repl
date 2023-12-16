@@ -78,7 +78,7 @@
   },
   "homepage": "https://github.com/pdanpdan/vue-repl#readme",
   "devDependencies": {
-    "@babel/types": "^7.23.5",
+    "@babel/types": "^7.23.6",
     "@emmetio/codemirror-plugin": "^1.2.4",
     "@rollup/plugin-replace": "^5.0.5",
     "@types/codemirror": "^5.60.15",
@@ -104,9 +104,9 @@
     "simple-git-hooks": "^2.9.0",
     "sucrase": "^3.34.0",
     "typescript": "^5.3.3",
-    "vite": "^5.0.7",
+    "vite": "^5.0.10",
     "vite-plugin-dts": "^3.6.4",
-    "vue": "^3.3.11",
+    "vue": "^3.3.12",
     "vue-tsc": "1.9.0-alpha.3"
   },
   "peerDependencies": {
