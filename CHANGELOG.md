@@ -1,3 +1,12 @@
+## [1.0.15](https://github.com/pdanpdan/vue-repl/compare/v1.0.14...v1.0.15) (2023-12-20)
+
+
+### Bug Fixes
+
+* ensure reuse AST in non-inline mode ([5e4c710](https://github.com/pdanpdan/vue-repl/commit/5e4c7101e4b6cc27fb0810390b0ca0287a101149))
+
+
+
 ## [1.0.14](https://github.com/pdanpdan/vue-repl/compare/v1.0.13...v1.0.14) (2023-12-16)
 
 
