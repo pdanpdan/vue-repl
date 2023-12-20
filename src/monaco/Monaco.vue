@@ -14,35 +14,26 @@ import * as monaco from 'monaco-editor-core'
 import { initMonaco } from './env'
 import { getOrCreateModel } from './utils'
 import { loadGrammars, loadTheme } from 'monaco-volar'
-import { Store } from '../store'
-import type { PreviewMode } from '../editor/types'
+import type { Store } from '../store'
+import type { EditorProps, EditorEmits } from '../editor/types'
 
-const props = withDefaults(
-  defineProps<{
-    filename: string
-    value?: string
-    readonly?: boolean
-    mode?: PreviewMode
-  }>(),
-  {
-    readonly: false,
-  }
-)
+const props = withDefaults(defineProps<EditorProps>(), {
+  readonly: false,
+})
 
-const emit = defineEmits<{
-  (e: 'change', value: string): void
-}>()
+const emit = defineEmits<EditorEmits>()
 
 const containerRef = ref<HTMLDivElement>()
 const ready = ref(false)
 const editor = shallowRef<monaco.editor.IStandaloneCodeEditor>()
-const store = inject<Store>('store')!
+const replTheme = inject<Ref<'dark' | 'light'>>('theme')!
+const store = inject('store') as Store
 
 initMonaco(store)
 
 const lang = computed(() => (props.mode === 'css' ? 'css' : 'javascript'))
+let editorInstanceMounted = false
 
-const replTheme = inject<Ref<'dark' | 'light'>>('theme')!
 onMounted(async () => {
   const theme = await loadTheme(monaco.editor)
   ready.value = true
@@ -61,7 +52,7 @@ onMounted(async () => {
     theme: replTheme.value === 'light' ? theme.light : theme.dark,
     readOnly: props.readonly,
     automaticLayout: true,
-    scrollBeyondLastLine: false,
+    scrollBeyondLastLine: true,
     minimap: {
       enabled: false,
     },
@@ -72,6 +63,9 @@ onMounted(async () => {
     fixedOverflowWidgets: true,
   })
   editor.value = editorInstance
+  editorInstanceMounted = true
+
+  let currentModelFilename = ''
 
   // Support for semantic highlighting
   const t = (editorInstance as any)._themeService._theme
@@ -98,27 +92,45 @@ onMounted(async () => {
   watch(
     () => props.value,
     (value) => {
-      if (editorInstance.getValue() === value) return
-      editorInstance.setValue(value || '')
+      if (
+        !editorInstance ||
+        !editorInstanceMounted ||
+        (props.readonly !== true && currentModelFilename !== props.filename)
+      )
+        return
+      const cur = editorInstance.getValue()
+      const val = typeof value !== 'string' ? '' : value
+      if (cur !== val) {
+        editorInstance.setValue(val)
+      }
     },
     { immediate: true }
   )
 
-  watch(lang, (lang) =>
-    monaco.editor.setModelLanguage(editorInstance.getModel()!, lang)
-  )
+  // update theme
+  watch(replTheme, (t) => {
+    if (!editorInstance || !editorInstanceMounted) return
+    editorInstance.updateOptions({
+      theme: t === 'light' ? theme.light : theme.dark,
+    })
+  })
 
-  if (!props.readonly) {
+  if (props.readonly) {
+    watch(lang, (l) => {
+      if (!editorInstance || !editorInstanceMounted) return
+      monaco.editor.setModelLanguage(editorInstance.getModel()!, l)
+    })
+  } else {
     watch(
       () => props.filename,
-      (_, oldFilename) => {
-        if (!editorInstance) return
-        const file = store.state.files[props.filename]
-        if (!file) return null
+      (newFilename, oldFilename) => {
+        if (!editorInstance || !editorInstanceMounted) return
+        const newFile = store.state.files[newFilename]
+        if (!newFile) return null
         const model = getOrCreateModel(
-          monaco.Uri.parse(`file:///${props.filename}`),
-          file.language,
-          file.code
+          monaco.Uri.parse(`file:///${newFilename}`),
+          newFile.language,
+          newFile.codeNext
         )
 
         const oldFile = oldFilename ? store.state.files[oldFilename] : null
@@ -128,34 +140,38 @@ onMounted(async () => {
 
         editorInstance.setModel(model)
 
-        if (file.editorViewState) {
-          editorInstance.restoreViewState(file.editorViewState)
+        if (newFile.editorViewState) {
+          editorInstance.restoreViewState(newFile.editorViewState)
           editorInstance.focus()
+        }
+
+        currentModelFilename = newFilename
+
+        const cur = editorInstance.getValue()
+        const val = typeof props.value !== 'string' ? '' : props.value
+        if (cur !== val) {
+          editorInstance.setValue(val)
         }
       },
       { immediate: true }
     )
+    editorInstance.addCommand(
+      monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS,
+      () => {
+        emit('save', props.filename)
+      }
+    )
+
+    editorInstance.onDidChangeModelContent(() => {
+      emit('change', editorInstance.getValue(), props.filename)
+    })
   }
 
   await loadGrammars(monaco, editorInstance)
-
-  editorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-    // ignore save event
-  })
-
-  editorInstance.onDidChangeModelContent(() => {
-    emit('change', editorInstance.getValue())
-  })
-
-  // update theme
-  watch(replTheme, (n) => {
-    editorInstance.updateOptions({
-      theme: n === 'light' ? theme.light : theme.dark,
-    })
-  })
 })
 
 onBeforeUnmount(() => {
+  editorInstanceMounted = false
   editor.value?.dispose()
 })
 </script>

@@ -1,38 +1,16 @@
 <script setup lang="ts">
 import SplitPane from './SplitPane.vue'
 import Output from './output/Output.vue'
-import { Store, ReplStore, SFCOptions } from './store'
+import { ReplStore } from './store'
 import { provide, ref, toRef, computed } from 'vue'
-import type { EditorComponentType } from './editor/types'
+import type { ReplProps } from './index'
+
 import EditorContainer from './editor/EditorContainer.vue'
 
-export interface Props {
-  theme?: 'dark' | 'light'
-  editor: EditorComponentType
-  store?: Store
-  autoResize?: boolean
-  showCompileOutput?: boolean
-  showImportMap?: boolean
-  showTsConfig?: boolean
-  clearConsole?: boolean
-  sfcOptions?: SFCOptions
-  layout?: 'horizontal' | 'vertical'
-  layoutReverse?: boolean
-  ssr?: boolean
-  previewOptions?: {
-    headHTML?: string
-    bodyHTML?: string
-    placeholderHTML?: string
-    customCode?: {
-      importCode?: string
-      useCode?: string
-    }
-  }
-}
-
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<ReplProps>(), {
   theme: 'light',
   store: () => new ReplStore(),
+  autoSave: 250,
   autoResize: true,
   showCompileOutput: true,
   showImportMap: true,
@@ -79,6 +57,7 @@ const editorSlotName = computed(() => (props.layoutReverse ? 'right' : 'left'))
 const outputSlotName = computed(() => (props.layoutReverse ? 'left' : 'right'))
 
 provide('store', store)
+provide('autosave', toRef(props, 'autoSave'))
 provide('autoresize', props.autoResize)
 provide('import-map', toRef(props, 'showImportMap'))
 provide('tsconfig', toRef(props, 'showTsConfig'))
@@ -97,7 +76,7 @@ defineExpose({ reload })
 
 <template>
   <div class="vue-repl">
-    <SplitPane :layout="layout">
+    <SplitPane :layout="layout" :layout-reverse="layoutReverse">
       <template #[editorSlotName]>
         <EditorContainer :editorComponent="editor" />
       </template>

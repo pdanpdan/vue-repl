@@ -6,6 +6,9 @@ import './codemirror.css'
 import 'codemirror/mode/javascript/javascript.js'
 import 'codemirror/mode/css/css.js'
 import 'codemirror/mode/htmlmixed/htmlmixed.js'
+import 'codemirror/mode/vue/vue.js'
+import 'codemirror/mode/sass/sass.js'
+import 'codemirror/mode/gfm/gfm.js'
 
 // addons
 import 'codemirror/addon/edit/closebrackets.js'
@@ -22,5 +25,9 @@ import 'codemirror/addon/dialog/dialog.js'
 
 // keymap
 import 'codemirror/keymap/sublime.js'
+
+import emmet from '@emmetio/codemirror-plugin'
+
+emmet(CodeMirror)
 
 export default CodeMirror

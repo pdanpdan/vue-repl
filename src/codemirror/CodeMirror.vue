@@ -1,29 +1,32 @@
 <template>
-  <div class="editor" ref="el"></div>
+  <div class="editor" ref="containerRef"></div>
 </template>
 
 <script setup lang="ts">
 import type { ModeSpec, ModeSpecOptions } from 'codemirror'
-import { ref, onMounted, watchEffect, inject } from 'vue'
-import { debounce } from '../utils'
+import { ref, onMounted, onBeforeUnmount, watch, inject } from 'vue'
 import CodeMirror from './codemirror'
+import { debounce } from '../utils'
+import type { EditorProps, EditorEmits } from '../editor/types'
 
 export interface Props {
+  filename: EditorProps['filename']
+  value?: EditorProps['value']
+  readonly?: EditorProps['readonly']
   mode?: string | ModeSpec<ModeSpecOptions>
-  value?: string
-  readonly?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  mode: 'htmlmixed',
   value: '',
   readonly: false,
+  mode: 'htmlmixed',
 })
 
-const emit = defineEmits<(e: 'change', value: string) => void>()
+const emit = defineEmits<EditorEmits>()
 
-const el = ref()
-const needAutoResize = inject('autoresize')
+const containerRef = ref<HTMLDivElement>()
+const needAutoResize = inject<boolean>('autoresize')
+const listenersCleanup = [] as Array<() => void>
 
 onMounted(() => {
   const addonOptions = props.readonly
@@ -34,10 +37,22 @@ onMounted(() => {
         foldGutter: true,
         gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
         keyMap: 'sublime',
+        extraKeys: {
+          Tab: 'emmetExpandAbbreviation',
+          Esc: 'emmetResetAbbreviation',
+          Enter: 'emmetInsertLineBreak',
+        },
+        emmet: {
+          mark: true,
+          markTagPairs: true,
+          previewOpenTag: true,
+          preview: true,
+          autoRenameTags: true,
+        },
       }
 
-  const editor = CodeMirror(el.value!, {
-    value: '',
+  const editorInstance = CodeMirror(containerRef.value!, {
+    value: props.value,
     mode: props.mode,
     readOnly: props.readonly,
     tabSize: 2,
@@ -46,33 +61,72 @@ onMounted(() => {
     ...addonOptions,
   })
 
-  editor.on('change', () => {
-    emit('change', editor.getValue())
-  })
-
-  watchEffect(() => {
-    const cur = editor.getValue()
-    if (props.value !== cur) {
-      editor.setValue(props.value)
+  watch(
+    () => props.value,
+    (value) => {
+      if (!editorInstance) return
+      const cur = editorInstance.getValue()
+      const val = typeof value !== 'string' ? '' : value
+      if (cur !== val) {
+        editorInstance.setValue(val)
+      }
     }
-  })
+  )
 
-  watchEffect(() => {
-    editor.setOption('mode', props.mode)
-  })
+  watch(
+    () => props.mode,
+    (mode) => {
+      if (!editorInstance) return
+      editorInstance.setOption('mode', mode)
+    }
+  )
+
+  watch(
+    () => props.filename,
+    () => {
+      if (!editorInstance) return
+      editorInstance.focus()
+    }
+  )
 
   setTimeout(() => {
-    editor.refresh()
+    if (!editorInstance) return
+    editorInstance.refresh()
   }, 50)
 
   if (needAutoResize) {
-    window.addEventListener(
-      'resize',
-      debounce(() => {
-        editor.refresh()
-      })
-    )
+    const resizeFnDebounced = debounce(() => {
+      if (!editorInstance) return
+      editorInstance.refresh()
+    })
+    window.addEventListener('resize', resizeFnDebounced)
+    listenersCleanup.push(() => {
+      window.removeEventListener('resize', resizeFnDebounced)
+    })
   }
+
+  if (props.readonly !== true) {
+    editorInstance.on('change', () => {
+      emit('change', editorInstance.getValue(), props.filename)
+    })
+
+    const saveKbd = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.code === 'KeyS') {
+        e.preventDefault()
+        emit('save', props.filename)
+      }
+    }
+    containerRef.value?.addEventListener('keydown', saveKbd)
+    listenersCleanup.push(() => {
+      containerRef.value?.removeEventListener('keydown', saveKbd)
+    })
+  }
+})
+
+onBeforeUnmount(() => {
+  const cleanup = listenersCleanup.slice()
+  listenersCleanup.length = 0
+  cleanup.forEach((fn) => fn())
 })
 </script>
 

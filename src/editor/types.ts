@@ -1,5 +1,5 @@
-import CodeMirrorEditor from "./CodeMirrorEditor.vue";
-import MonacoEditor from "./MonacoEditor.vue";
+import CodeMirrorEditor from './CodeMirrorEditor.vue'
+import MonacoEditor from './MonacoEditor.vue'
 
 export type EditorComponentType = typeof CodeMirrorEditor | typeof MonacoEditor
 
@@ -13,5 +13,6 @@ export interface EditorProps {
 }
 
 export interface EditorEmits {
-  (e: 'change', code: string): void
+  (e: 'change', code: string, fileName?: string): void
+  (e: 'save', fileName?: string): void
 }

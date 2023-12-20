@@ -1,4 +1,4 @@
-import { version, reactive, watchEffect, watch } from 'vue'
+import { version, reactive, watch } from 'vue'
 import * as defaultCompiler from 'vue/compiler-sfc'
 import { compileFile } from './transform'
 import { utoa, atou } from './utils'
@@ -35,6 +35,8 @@ const tsconfig = {
 export class File {
   filename: string
   code: string
+  codeNext: string
+  changed: boolean
   hidden: boolean
   compiled = {
     js: '',
@@ -46,7 +48,40 @@ export class File {
   constructor(filename: string, code = '', hidden = false) {
     this.filename = filename
     this.code = code
+    this.codeNext = code
+    this.changed = false
     this.hidden = hidden
+
+    watch(
+      () => this.code,
+      () => {
+        if (this.codeNext !== this.code) {
+          this.codeNext = this.code
+        }
+        if (this.changed === true) {
+          this.changed = false
+        }
+      }
+    )
+  }
+
+  change(code: string) {
+    if (this.codeNext !== code) {
+      this.codeNext = code
+    }
+    const changed = this.codeNext !== this.code
+    if (this.changed !== changed) {
+      this.changed = changed
+    }
+  }
+
+  save() {
+    if (this.code !== this.codeNext) {
+      this.code = this.codeNext
+    }
+    if (this.changed === true) {
+      this.changed = false
+    }
   }
 
   get language() {
@@ -56,11 +91,19 @@ export class File {
     if (this.filename.endsWith('.html')) {
       return 'html'
     }
-    if (this.filename.endsWith('.css')) {
+    if (
+      this.filename.endsWith('.css') ||
+      this.filename.endsWith('.sass') ||
+      this.filename.endsWith('.scss') ||
+      this.filename.endsWith('.less')
+    ) {
       return 'css'
     }
     if (this.filename.endsWith('.ts')) {
       return 'typescript'
+    }
+    if (this.filename.endsWith('.md')) {
+      return 'markdown'
     }
     return 'javascript'
   }
@@ -105,6 +148,11 @@ export interface Store {
   initialShowOutput: boolean
   initialOutputMode: OutputModes
   customElement: boolean | string | RegExp | (string | RegExp)[]
+  supportedLanguages: string[]
+  transformer?(options: {
+    code: string
+    filename: string
+  }): Promise<{ code?: string; filename?: string; errors?: string[] }>
 }
 
 export interface StoreOptions {
@@ -117,6 +165,11 @@ export interface StoreOptions {
   defaultVueRuntimeProdURL?: string
   defaultVueServerRendererURL?: string
   customElement?: boolean | string | RegExp | (string | RegExp)[]
+  supportedLanguages?: string[]
+  transformer?(options: {
+    code: string
+    filename: string
+  }): Promise<{ code?: string; filename?: string; errors?: string[] }>
 }
 
 export class ReplStore implements Store {
@@ -129,6 +182,11 @@ export class ReplStore implements Store {
   initialOutputMode: OutputModes
   reloadLanguageTools: undefined | (() => void)
   customElement: boolean | string | RegExp | (string | RegExp)[]
+  supportedLanguages: string[]
+  transformer?(options: {
+    code: string
+    filename: string
+  }): Promise<{ code?: string; filename?: string; errors?: string[] }>
 
   private defaultVueRuntimeDevURL: string
   private defaultVueRuntimeProdURL: string
@@ -144,13 +202,15 @@ export class ReplStore implements Store {
     outputMode = 'preview',
     productionMode = false,
     customElement = /\.ce\.vue$/,
+    supportedLanguages,
+    transformer,
   }: StoreOptions = {}) {
     const files: StoreState['files'] = {}
 
     if (serializedState) {
       const saved = JSON.parse(atou(serializedState))
-      for (const filename in saved) {
-        setFile(files, filename, saved[filename])
+      for (const fileName in saved) {
+        setFile(files, fileName, saved[fileName])
       }
     } else {
       setFile(files, defaultMainFile, welcomeCode)
@@ -163,6 +223,17 @@ export class ReplStore implements Store {
     this.initialShowOutput = showOutput
     this.customElement = customElement
     this.initialOutputMode = outputMode as OutputModes
+    this.supportedLanguages = [
+      ...new Set([
+        'vue',
+        'js',
+        'ts',
+        'css',
+        'json',
+        ...(supportedLanguages || []),
+      ]),
+    ]
+    this.transformer = transformer
 
     let mainFile = defaultMainFile
     if (!files[mainFile]) {
@@ -192,10 +263,28 @@ export class ReplStore implements Store {
 
   // don't start compiling until the options are set
   init() {
-    watchEffect(() =>
-      compileFile(this, this.state.activeFile).then(
-        (errs) => (this.state.errors = errs)
-      )
+    watch(
+      () => [this.state.activeFile.filename, this.state.activeFile.code],
+      (newFile, oldFile) => {
+        this.state.errors = []
+
+        if (
+          oldFile &&
+          oldFile[0] !== newFile[0] &&
+          this.state.files[oldFile?.[0]!]?.changed
+        ) {
+          setTimeout(() => {
+            compileFile(this, this.state.files[oldFile?.[0]!]).then(
+              (errs) => (this.state.errors = [...this.state.errors, ...errs])
+            )
+          }, 1)
+        }
+
+        compileFile(this, this.state.files[newFile[0]]).then(
+          (errs) => (this.state.errors = [...this.state.errors, ...errs])
+        )
+      },
+      { immediate: true }
     )
 
     watch(
@@ -211,9 +300,9 @@ export class ReplStore implements Store {
     )
 
     this.state.errors = []
-    for (const file in this.state.files) {
-      if (file !== defaultMainFile) {
-        compileFile(this, this.state.files[file]).then((errs) =>
+    for (const fileName in this.state.files) {
+      if (fileName !== this.state.activeFile.filename) {
+        compileFile(this, this.state.files[fileName]).then((errs) =>
           this.state.errors.push(...errs)
         )
       }
@@ -289,11 +378,11 @@ export class ReplStore implements Store {
     const newFiles: Record<string, File> = {}
 
     // Preserve iteration order for files
-    for (const name in files) {
-      if (name === oldFilename) {
+    for (const fileName in files) {
+      if (fileName === oldFilename) {
         newFiles[newFilename] = file
       } else {
-        newFiles[name] = files[name]
+        newFiles[fileName] = files[fileName]
       }
     }
 
@@ -328,10 +417,10 @@ export class ReplStore implements Store {
 
   getFiles() {
     const exported: Record<string, string> = {}
-    for (const filename in this.state.files) {
+    for (const fileName in this.state.files) {
       const normalized =
-        filename === importMapFile ? filename : stripSrcPrefix(filename)
-      exported[normalized] = this.state.files[filename].code
+        fileName === importMapFile ? fileName : stripSrcPrefix(fileName)
+      exported[normalized] = this.state.files[fileName].code
     }
     return exported
   }
@@ -341,12 +430,12 @@ export class ReplStore implements Store {
     if (mainFile === defaultMainFile && !newFiles[mainFile]) {
       setFile(files, mainFile, welcomeCode)
     }
-    for (const filename in newFiles) {
-      setFile(files, filename, newFiles[filename])
+    for (const fileName in newFiles) {
+      setFile(files, fileName, newFiles[fileName])
     }
     const errors = []
-    for (const file in files) {
-      errors.push(...(await compileFile(this, files[file])))
+    for (const fileName in files) {
+      errors.push(...(await compileFile(this, files[fileName])))
     }
     this.state.errors = errors
     this.state.mainFile = addSrcPrefix(mainFile)

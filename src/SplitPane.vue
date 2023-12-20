@@ -2,7 +2,10 @@
 import { ref, reactive, computed, inject } from 'vue'
 import { Store } from './store'
 
-const props = defineProps<{ layout?: 'horizontal' | 'vertical' }>()
+const props = defineProps<{
+  layout?: 'horizontal' | 'vertical'
+  layoutReverse?: boolean
+}>()
 const isVertical = computed(() => props.layout === 'vertical')
 
 const container = ref()
@@ -74,7 +77,7 @@ function dragEnd() {
     </div>
 
     <button class="toggler" @click="showOutput = !showOutput">
-      {{ showOutput ? '< Code' : 'Output >' }}
+      {{ showOutput !== props.layoutReverse ? '< Code' : 'Output >' }}
     </button>
   </div>
 </template>
@@ -116,7 +119,8 @@ function dragEnd() {
   color: var(--text-light);
   position: absolute;
   left: 50%;
-  bottom: 20px;
+  bottom: 21px;
+  line-height: 19px;
   background-color: var(--bg);
   padding: 8px 12px;
   border-radius: 8px;
@@ -162,8 +166,10 @@ function dragEnd() {
 @media (max-width: 720px) {
   .left,
   .right {
-    width: 100% !important;
-    height: 100% !important;
+    position: absolute;
+    inset: 0;
+    width: auto !important;
+    height: auto !important;
   }
   .dragger {
     display: none;
@@ -172,13 +178,20 @@ function dragEnd() {
     display: block;
   }
   .split-pane .right {
-    display: none;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .split-pane .left {
+    z-index: 0;
+    pointer-events: all;
   }
   .split-pane.show-output .right {
-    display: block;
+    z-index: 0;
+    pointer-events: all;
   }
   .split-pane.show-output .left {
-    display: none;
+    z-index: -1;
+    pointer-events: none;
   }
 }
 </style>

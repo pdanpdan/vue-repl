@@ -14,8 +14,8 @@ const visible = defineModel<boolean>()
 <style scoped>
 .wrapper {
   position: absolute;
-  bottom: 8px;
-  right: 15px;
+  bottom: 25px;
+  left: 15px;
   z-index: 11;
   display: flex;
   align-items: center;
