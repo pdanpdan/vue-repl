@@ -82,7 +82,7 @@
     "@emmetio/codemirror-plugin": "^1.2.4",
     "@rollup/plugin-replace": "^5.0.5",
     "@types/codemirror": "^5.60.15",
-    "@types/node": "^20.10.4",
+    "@types/node": "^20.10.5",
     "@vitejs/plugin-vue": "^4.5.2",
     "@volar/cdn": "~1.11.1",
     "@volar/monaco": "~1.11.1",
@@ -106,7 +106,7 @@
     "typescript": "^5.3.3",
     "vite": "^5.0.10",
     "vite-plugin-dts": "^3.6.4",
-    "vue": "^3.3.12",
+    "vue": "^3.3.13",
     "vue-tsc": "1.9.0-alpha.3"
   },
   "peerDependencies": {
