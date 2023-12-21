@@ -13,7 +13,6 @@ import {
 import * as monaco from 'monaco-editor-core'
 import { initMonaco } from './env'
 import { getOrCreateModel } from './utils'
-import { loadGrammars, loadTheme } from 'monaco-volar'
 import type { Store } from '../store'
 import type { EditorProps, EditorEmits } from '../editor/types'
 
@@ -35,7 +34,7 @@ const lang = computed(() => (props.mode === 'css' ? 'css' : 'javascript'))
 let editorInstanceMounted = false
 
 onMounted(async () => {
-  const theme = await loadTheme(monaco.editor)
+  const theme = await import('./highlight').then(r => r.registerHighlighter())
   ready.value = true
   await nextTick()
 
@@ -59,7 +58,6 @@ onMounted(async () => {
     inlineSuggest: {
       enabled: false,
     },
-    'semanticHighlighting.enabled': true,
     fixedOverflowWidgets: true,
   })
   editor.value = editorInstance
@@ -166,8 +164,6 @@ onMounted(async () => {
       emit('change', editorInstance.getValue(), props.filename)
     })
   }
-
-  await loadGrammars(monaco, editorInstance)
 })
 
 onBeforeUnmount(() => {
