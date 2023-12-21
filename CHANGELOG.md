@@ -1,3 +1,17 @@
+## [1.0.16](https://github.com/pdanpdan/vue-repl/compare/v1.0.15...v1.0.16) (2023-12-21)
+
+
+### Bug Fixes
+
+* remove onigasm dep ([e7a73ac](https://github.com/pdanpdan/vue-repl/commit/e7a73ac249ce44a6f4b661f6e6ff4842f3225d6b))
+
+
+### Features
+
+* use shikiji for more accurate highlight ([#190](https://github.com/pdanpdan/vue-repl/issues/190)) ([e79aa1a](https://github.com/pdanpdan/vue-repl/commit/e79aa1af8dc898d9170c5f33ee031ead61f32320))
+
+
+
 ## [1.0.15](https://github.com/pdanpdan/vue-repl/compare/v1.0.14...v1.0.15) (2023-12-20)
 
 
