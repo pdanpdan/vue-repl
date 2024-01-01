@@ -1,3 +1,12 @@
+## [1.0.18](https://github.com/pdanpdan/vue-repl/compare/v1.0.17...v1.0.18) (2024-01-01)
+
+
+### Bug Fixes
+
+* **Preview:** fixing incorrect styles during onMounted [#191](https://github.com/pdanpdan/vue-repl/issues/191) ([501e552](https://github.com/pdanpdan/vue-repl/commit/501e5524870369e157506492e23faeb82f604a99))
+
+
+
 ## [1.0.17](https://github.com/pdanpdan/vue-repl/compare/v1.0.16...v1.0.17) (2023-12-29)
 
 
