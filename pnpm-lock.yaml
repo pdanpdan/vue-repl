@@ -60,11 +60,11 @@ devDependencies:
     specifier: ^3.1.1
     version: 3.1.1
   shikiji:
-    specifier: ^0.9.16
-    version: 0.9.16
+    specifier: ^0.9.17
+    version: 0.9.17
   shikiji-monaco:
-    specifier: ^0.9.16
-    version: 0.9.16
+    specifier: ^0.9.17
+    version: 0.9.17
   simple-git-hooks:
     specifier: ^2.9.0
     version: 2.9.0
@@ -2438,20 +2438,20 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /shikiji-core@0.9.16:
-    resolution: {integrity: sha512-eJIK8/IpzvAGnbckCE2Qf/fOSfpjVLSosUfI3pQAnbphGXagEqiRcT/gyVtL4llqmBh0nexqRdJKMFZF3A6ayw==}
+  /shikiji-core@0.9.17:
+    resolution: {integrity: sha512-r1FWTXk6SO2aYqfWgcsJ11MuVQ1ymPSdXzJjK7q8EXuyqu8yc2N5qrQy5+BL6gTVOaF4yLjbxFjF+KTRM1Sp8Q==}
     dev: true
 
-  /shikiji-monaco@0.9.16:
-    resolution: {integrity: sha512-aUvLMnz/pWlHsJVEgHvQtuFv3dsLu95Y3mxiy9TaxUS/k7FO3dIo375pqFHaVu4S5H0w3VC0C6W9x2o7V+tRew==}
+  /shikiji-monaco@0.9.17:
+    resolution: {integrity: sha512-5HLHQSLtg8QdOU+dkLxIiWovkqqKacYLuuJtVMYBayviZKTTBdY9IxvUSFq0Maj/LDC2OI0HEEs51DqwPSCRow==}
     dependencies:
-      shikiji-core: 0.9.16
+      shikiji-core: 0.9.17
     dev: true
 
-  /shikiji@0.9.16:
-    resolution: {integrity: sha512-QeSwiW88gHke9deQ5Av1f6CEVPGW/riRMPT3vMDGPnASCOhBZK4TYk5ZRoa2qYLncPZS5kXKwcggccQvg3+U7Q==}
+  /shikiji@0.9.17:
+    resolution: {integrity: sha512-0z/1NfkhBkm3ijrfFeHg3G9yDNuHhXdAGbQm7tRxj4WQ5z2y0XDbnagFyKyuV2ebCTS1Mwy1I3n0Fzcc/4xdmw==}
     dependencies:
-      shikiji-core: 0.9.16
+      shikiji-core: 0.9.17
     dev: true
 
   /signal-exit@3.0.7:
