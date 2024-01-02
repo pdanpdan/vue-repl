@@ -1,3 +1,12 @@
+## [1.0.19](https://github.com/pdanpdan/vue-repl/compare/v1.0.18...v1.0.19) (2024-01-02)
+
+
+### Bug Fixes
+
+* pass sfc template options to sfc parse ([d72dfdf](https://github.com/pdanpdan/vue-repl/commit/d72dfdfd2e2670592c957616fcf4e694609912a0))
+
+
+
 ## [1.0.18](https://github.com/pdanpdan/vue-repl/compare/v1.0.17...v1.0.18) (2024-01-01)
 
 
