@@ -26,6 +26,10 @@ export interface ReplProps {
     headHTML?: string
     bodyHTML?: string
     placeholderHTML?: string
+    customCodeSSR?: {
+      importCode?: string
+      useCode?: string
+    },
     customCode?: {
       importCode?: string
       useCode?: string

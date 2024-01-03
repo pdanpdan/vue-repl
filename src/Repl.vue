@@ -22,6 +22,10 @@ const props = withDefaults(defineProps<ReplProps>(), {
     headHTML: '',
     bodyHTML: '',
     placeholderHTML: '',
+    customCodeSSR: {
+      importCode: '',
+      useCode: '',
+    },
     customCode: {
       importCode: '',
       useCode: '',
