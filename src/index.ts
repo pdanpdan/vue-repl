@@ -29,7 +29,7 @@ export interface ReplProps {
     customCodeSSR?: {
       importCode?: string
       useCode?: string
-    },
+    }
     customCode?: {
       importCode?: string
       useCode?: string
