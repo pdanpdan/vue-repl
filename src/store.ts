@@ -165,6 +165,8 @@ export interface StoreOptions {
   defaultVueRuntimeProdURL?: string
   defaultVueServerRendererURL?: string
   customElement?: boolean | string | RegExp | (string | RegExp)[]
+  welcomeFileTemplate?: string
+  newSFCTemplate?: string
   supportedLanguages?: string[]
   transformer?(options: {
     code: string
@@ -192,6 +194,8 @@ export class ReplStore implements Store {
   private defaultVueRuntimeProdURL: string
   private defaultVueServerRendererURL: string
   private pendingCompiler: Promise<any> | null = null
+  private welcomeFileTemplate?: string
+  private newSFCTemplate?: string
 
   constructor({
     serializedState = '',
@@ -202,10 +206,14 @@ export class ReplStore implements Store {
     outputMode = 'preview',
     productionMode = false,
     customElement = /\.ce\.vue$/,
+    welcomeFileTemplate = welcomeCode,
+    newSFCTemplate = newSFCCode,
     supportedLanguages,
     transformer,
   }: StoreOptions = {}) {
     const files: StoreState['files'] = {}
+    this.welcomeFileTemplate = welcomeFileTemplate
+    this.newSFCTemplate = newSFCTemplate
 
     if (serializedState) {
       const saved = JSON.parse(atou(serializedState))
@@ -213,7 +221,7 @@ export class ReplStore implements Store {
         setFile(files, fileName, saved[fileName])
       }
     } else {
-      setFile(files, defaultMainFile, welcomeCode)
+      setFile(files, defaultMainFile, this.welcomeFileTemplate)
     }
 
     this.productionMode = productionMode
@@ -339,7 +347,7 @@ export class ReplStore implements Store {
     if (typeof fileOrFilename === 'string') {
       file = new File(
         fileOrFilename,
-        fileOrFilename.endsWith('.vue') ? newSFCCode : ''
+        fileOrFilename.endsWith('.vue') ? this.newSFCTemplate : ''
       )
     } else {
       file = fileOrFilename
@@ -399,7 +407,7 @@ export class ReplStore implements Store {
     const files = this.getFiles()
     const importMap = files[importMapFile]
     if (importMap) {
-      const { imports } = JSON.parse(importMap)
+      const { imports, ...restImportMap } = JSON.parse(importMap)
       if (imports['vue'] === this.defaultVueRuntimeURL) {
         delete imports['vue']
       }
@@ -409,7 +417,11 @@ export class ReplStore implements Store {
       if (!Object.keys(imports).length) {
         delete files[importMapFile]
       } else {
-        files[importMapFile] = JSON.stringify({ imports }, null, 2)
+        files[importMapFile] = JSON.stringify(
+          { imports, ...restImportMap },
+          null,
+          2
+        )
       }
     }
     return '#' + utoa(JSON.stringify(files))
@@ -481,7 +493,7 @@ export class ReplStore implements Store {
           )
         }
         map.code = JSON.stringify(json, null, 2)
-      } catch (e) {}
+      } catch {}
     }
   }
 
