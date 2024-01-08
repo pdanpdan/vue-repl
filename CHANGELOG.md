@@ -1,3 +1,25 @@
+## [1.0.20](https://github.com/pdanpdan/vue-repl/compare/v1.0.19...v1.0.20) (2024-01-08)
+
+
+### Bug Fixes
+
+* **codemirror:** fix codemirror editor showing nothing on start on small layouts when starting in ouput mode ([#181](https://github.com/pdanpdan/vue-repl/issues/181)) ([6d7598d](https://github.com/pdanpdan/vue-repl/commit/6d7598d763c79d777efae4e17ef61132930ae9a0))
+* default to white color on dark theme ([#202](https://github.com/pdanpdan/vue-repl/issues/202)) ([481035a](https://github.com/pdanpdan/vue-repl/commit/481035a443031e50de26b75c8e5b86fbb8ca96f2))
+* **messages:** place error messages in editor in front of bottom toggles ([#183](https://github.com/pdanpdan/vue-repl/issues/183)) ([b1594d0](https://github.com/pdanpdan/vue-repl/commit/b1594d07dbb29d7d3c15afa4110a4005d4245297))
+* **Preview:** fix style loading delay ([#191](https://github.com/pdanpdan/vue-repl/issues/191)) ([ece4414](https://github.com/pdanpdan/vue-repl/commit/ece4414186fab8bb19290ed047e2a4ab665ae3ef))
+* serialize import maps ([e085e30](https://github.com/pdanpdan/vue-repl/commit/e085e3041a228fe0ec076056e23e8f55258120ab)), closes [#204](https://github.com/pdanpdan/vue-repl/issues/204)
+
+
+### Features
+
+* add theme as classname to sandbox ([#203](https://github.com/pdanpdan/vue-repl/issues/203)) ([7e9dc0f](https://github.com/pdanpdan/vue-repl/commit/7e9dc0f3b1f2c488664ccfa22cdf21ba19926158))
+* apply theme to preview ([#200](https://github.com/pdanpdan/vue-repl/issues/200)) ([7ae1061](https://github.com/pdanpdan/vue-repl/commit/7ae106129274f13393808000fd25995d919ae0bd))
+* **playground:** use a height of 100dvh with fallback to original 100vh ([#182](https://github.com/pdanpdan/vue-repl/issues/182)) ([9e99990](https://github.com/pdanpdan/vue-repl/commit/9e99990f7aa2bd8792510fcc03fda931691e8353))
+* **preview:** allow inject customCode in SSR render and provide context constant SSR_CLIENT for conditional execution of custom code ([6c02276](https://github.com/pdanpdan/vue-repl/commit/6c022761506d8615f708dc7967887741f6958468))
+* support custom template ([#196](https://github.com/pdanpdan/vue-repl/issues/196)) ([8038b49](https://github.com/pdanpdan/vue-repl/commit/8038b49cc5fb76a7dc34acffcda5b3f55ff8aa11))
+
+
+
 ## [1.0.19](https://github.com/pdanpdan/vue-repl/compare/v1.0.18...v1.0.19) (2024-01-02)
 
 
