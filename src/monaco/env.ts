@@ -1,6 +1,5 @@
 import { jsDelivrUriBase } from '@volar/cdn'
 import * as volar from '@volar/monaco'
-import * as monaco from 'monaco-editor-core'
 import { editor, languages, Uri } from 'monaco-editor-core'
 import editorWorker from 'monaco-editor-core/esm/vs/editor/editor.worker?worker'
 
